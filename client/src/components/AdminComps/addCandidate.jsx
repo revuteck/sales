@@ -39,7 +39,7 @@ export default function AddCandidate() {
   const fetchEmployees = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/employee/data", {
+      const res = await axios.get("https://rev-comp-backend.onrender.com/api/employee/data", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEmployees(res.data);
@@ -70,7 +70,7 @@ export default function AddCandidate() {
       const token = localStorage.getItem("token");
       
       await axios.post(
-        "http://localhost:5000/api/candidates/add",
+        "https://rev-comp-backend.onrender.com/api/candidates/add",
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -195,7 +195,7 @@ export default function AddCandidate() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:5000/api/bulk/candidates/bulk-insert",
+        "https://rev-comp-backend.onrender.com/api/bulk/candidates/bulk-insert",
         { data: csvData },
         { headers: { Authorization: `Bearer ${token}` } }
       );
