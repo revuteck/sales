@@ -71,24 +71,24 @@ export default function Second() {
             {pendingCandidates.length > 0 ? (
               pendingCandidates.map((candidate) => (
                 <tr key={candidate.candidate_id}>
-                  <td>{candidate.candidate_id}</td>
-                  <td>{candidate.comp_domain}</td>
-                  <td>{candidate.comp_name}</td>
-                  <td>
+                  <td class="td-wrap">{candidate.candidate_id}</td>
+                  <td class="td-wrap">{candidate.comp_domain}</td>
+                  <td class="td-wrap">{candidate.comp_name}</td>
+                  <td class="td-wrap">
                     <a href={`https://${candidate.website}`} target="_blank" rel="noreferrer">
                       {candidate.website}
                     </a>
                   </td>
-                  <td>{candidate.email}</td>
-                  <td>{candidate.phone}</td>
-                  <td>{formatDate(candidate.date_of_register)}</td>
-                  <td style={{ fontWeight: "bold", color: "red" }}>
+                  <td class="td-wrap">{candidate.email}</td>
+                  <td class="td-wrap">{candidate.phone}</td>
+                  <td class="td-wrap">{formatDate(candidate.date_of_register)}</td>
+                  <td style={{ fontWeight: "bold", color: "red" }} class="td-wrap">
                     {formatDate(candidate.second_f_date)}
                   </td>
-                  <td>{candidate.second_f_status}</td>
+                  <td class="td-wrap">{candidate.second_f_status}</td>
                   {/* <td>{candidate.assigned_emp_id}</td> */}
-                  <td>{candidate.emp_name}</td>
-                  <td>{candidate.country_name}</td>
+                  <td class="td-wrap">{candidate.emp_name}</td>
+                  <td class="td-wrap">{candidate.country_name}</td>
                 </tr>
               ))
             ) : (
