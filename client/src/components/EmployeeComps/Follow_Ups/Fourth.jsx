@@ -62,7 +62,7 @@ export default function Fourth() {
               <th>Registered</th>
               <th>4th Follow-up</th>
               <th>Status</th>
-              <th>Assigned Emp</th>
+              {/* <th>Assigned Emp</th> */}
               <th>Employee</th>
               <th>Country</th>
             </tr>
@@ -91,7 +91,7 @@ export default function Fourth() {
                     {formatDate(candidate.fourth_f_date)}
                   </td>
                   <td>{candidate.fourth_f_status}</td>
-                  <td>{candidate.assigned_emp_id}</td>
+                  {/* <td>{candidate.assigned_emp_id}</td> */}
                   <td>{candidate.emp_name}</td>
                   <td>{candidate.country_name}</td>
                 </tr>
