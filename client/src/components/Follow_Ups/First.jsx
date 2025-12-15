@@ -7,7 +7,7 @@ export default function First() {
     const empId = Number(localStorage.getItem("id"));
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/candidates')
+        axios.get('https://rev-comp-backend.onrender.com/api/candidates')
             .then(response => {
                 setCandidate(response.data);
             })
