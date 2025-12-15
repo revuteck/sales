@@ -8,7 +8,7 @@ export default function Fourth() {
 
     // Fetch only once using useEffect
     useEffect(() => {
-        axios.get('http://localhost:5000/api/candidates')
+        axios.get('https://rev-comp-backend.onrender.com/api/candidates')
             .then(response => {
                 setCandidate(response.data);
             })
