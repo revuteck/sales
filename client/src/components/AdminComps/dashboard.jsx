@@ -22,11 +22,11 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const empRes = await axios.get("http://localhost:5000/api/employee/data", {
+      const empRes = await axios.get("https://rev-comp-backend.onrender.com/api/employee/data", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const candRes = await axios.get("http://localhost:5000/api/candidates", {
+      const candRes = await axios.get("https://rev-comp-backend.onrender.com/api/candidates", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
