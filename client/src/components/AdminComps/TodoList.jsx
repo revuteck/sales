@@ -12,7 +12,7 @@ export default function TodoList() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/candidates`);
+      const res = await axios.get(`https://rev-comp-backend.onrender.com/api/candidates`);
       setCandidates(res.data);
     } catch (err) {
       console.error(err);
@@ -46,7 +46,7 @@ export default function TodoList() {
     if (selectedRows.length === 0) return alert("⚠ Select a candidate!");
 
     try {
-      await axios.put(`http://localhost:5000/api/candidates/update-status`, {
+      await axios.put(`https://rev-comp-backend.onrender.com/api/candidates/update-status`, {
         ids: selectedRows,
         stage,
       });
