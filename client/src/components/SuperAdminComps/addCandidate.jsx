@@ -31,7 +31,7 @@ export default function addCandidate() {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "http://localhost:5000/api/candidates/add",
+        "https://rev-comp-backend.onrender.com/api/candidates/add",
         { ...formData, empID, empName },
         {
           headers: {
