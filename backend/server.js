@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 5000;
 
 // ---- ENABLE CORS BEFORE ROUTES ----
 app.use(cors({
-    origin: "https://rev-comp.onrender.com/",
+    origin: "https://rev-comp.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
