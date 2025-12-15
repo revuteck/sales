@@ -134,7 +134,7 @@ export default function Candidates() {
                 <div className="table-wrapper mt-4"
                     style={{ maxHeight: "580px", overflowY: "auto", overflowX: "hidden" }}>
 
-                    <table className="table table-bordered table-hover">
+                    <table className="table table-bordered table-hover table-follow-ups">
                         <thead className="table-dark" style={{ position: "sticky", top: 0, zIndex: 10 }}>
                             <tr>
                                 <th style={{ width: '10px' }}>Id</th>
