@@ -109,6 +109,7 @@ thead th {
   color: #fff;
   z-index: 10;
   white-space: nowrap;
+  font-size: 15px;
 }
 
 tbody td {
