@@ -12,7 +12,7 @@ db.getConnection((err, connection) => {
     if (err) {
         console.log("Database Connection Failed");
     } else {
-        console.log("Database Connected");
+        console.log("Database Connected from revu");
         connection.release();
     }
 });
