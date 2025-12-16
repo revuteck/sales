@@ -133,6 +133,7 @@ export default function addCandidate() {
           website: r.website,
           email: r.email,
           phone: r.phone && r.phone.trim() !== "" ? r.phone : null,
+          
 
 
           dateReg: formatDate(r.date_of_register),
@@ -140,15 +141,15 @@ export default function addCandidate() {
           firstStatus: r.first_f_status,
 
           secondFollow: formatDate(r.second_f_date),
-          secondStatus: r.second_f_status,
+          secondStatus: r.second_f_status || "PENDING",
 
           thirdFollow: formatDate(r.third_f_date),
-          thirdStatus: r.third_f_status,
+          thirdStatus: r.third_f_status || "PENDING",
 
           fourthFollow: formatDate(r.fourth_f_date),
-          fourthStatus: r.fourth_f_status,
+          fourthStatus: r.fourth_f_status || "PENDING",
 
-          finalStatus: r.final_status,
+          finalStatus: r.final_status || "PENDING",
           empID: empID,
           empName: empName,
           countryId: r.country_id,
