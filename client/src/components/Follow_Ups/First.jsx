@@ -73,7 +73,7 @@ export default function First() {
                                     <td className='td-wrap'>{candidate.candidate_id}</td>
                                     <td className='td-wrap'>{candidate.comp_domain}</td>
                                     <td className='td-wrap'>{candidate.comp_name}</td>
-                                    <td className='td-wrap'><a href={`https://${candidate.website}`} target="_blank" rel="noreferrer">{candidate.website}</a></td>
+                                    <td className='td-wrap'><a href={candidate.website} target="_blank" rel="noreferrer">{candidate.website}</a></td>
                                     <td className='td-wrap'>{candidate.email}</td>
                                     <td className='td-wrap'>{candidate.phone}</td>
                                     <td className='td-wrap'>{formatDate(candidate.date_of_register)}</td>
