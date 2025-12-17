@@ -205,9 +205,14 @@ export default function AddCandidate() {
       alert("CSV Uploaded Successfully!")
       setCsvData([]); // reset
     } catch (error) {
-      setCsvMessage("Failed to upload CSV");
-      console.error(error);
-    }
+        const msg =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to upload CSV";
+
+      setCsvMessage(msg);
+}
+
   };
 console.log("Admin csv file data:", csvData)
   return (
