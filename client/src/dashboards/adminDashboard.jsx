@@ -69,7 +69,7 @@ export default function SuperAdminDashboard() {
           <a 
             href="#" 
             className={activeLink === "employees" ? "active" : ""}
-            onClick={() => handleNavClick("getEmp")}
+            onClick={() => handleNavClick("employees")}
           >
             Employees
           </a>
