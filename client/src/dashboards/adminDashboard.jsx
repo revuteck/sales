@@ -113,7 +113,7 @@ export default function SuperAdminDashboard() {
         {view === "dashboard" && <Dashboard/>}
         {view === "candidates" && <Candidates />}
         {view === "addemp" && <AddEmp />}
-        {view === "getEmp" && <GetEmp />}
+        {view === "employees" && <GetEmp />}
         {view === "addcandidate" && <AddCandidate/>}
         {view === "pendings" && <Pendings />}
         {view === "todolist" && <TodoList/>}
