@@ -95,7 +95,7 @@ export default function Dashboard() {
         <Candidates />
       ) : (
         <div className="container py-4">
-          <h2 className="mb-4 fw-bold">📊 Dashboard Overview</h2>
+          <h4 className="mb-4"> Dashboard Overview</h4>
 
           <div className="row g-4">
 
