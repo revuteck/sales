@@ -105,19 +105,19 @@ export default function TodoList() {
             {list.length > 0 ? (
               list.map((c) => (
                 <tr key={c.candidate_id}>
-                  <td>{c.candidate_id}</td>
-                  <td>{c.comp_domain}</td>
-                  <td>{c.comp_name}</td>
-                  <td>
+                  <td class="td-wrap">{c.candidate_id}</td>
+                  <td class="td-wrap">{c.comp_domain}</td>
+                  <td class="td-wrap">{c.comp_name}</td>
+                  <td class="td-wrap">
                     <a href={`https://${c.website}`} target="_blank" rel="noreferrer">
                       {c.website}
                     </a>
                   </td>
-                  <td>{c.email}</td>
-                  <td>{c.phone}</td>
-                  <td>{formatDate(c[dateField])}</td>
-                  <td>{c[statusField]}</td>
-                  <td>
+                  <td class="td-wrap">{c.email}</td>
+                  <td class="td-wrap">{c.phone}</td>
+                  <td class="td-wrap">{formatDate(c[dateField])}</td>
+                  <td class="td-wrap">{c[statusField]}</td>
+                  <td class="td-wrap">
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(c.candidate_id)}
