@@ -136,7 +136,7 @@ export default function Dashboard() {
               <div className="dash-card shadow">
                 <div className="icon bg-danger">⏳</div>
                 <div>
-                  <span className="label">Pending Follow-ups</span>
+                  <span className="label">Remaining-Mails</span>
                   <h2 className="value text-danger">{counts.pending}</h2>
                 </div>
               </div>
