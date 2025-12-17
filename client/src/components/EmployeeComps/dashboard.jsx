@@ -100,7 +100,7 @@ export default function Dashboard() {
           <div className="row g-4">
 
             <div className="col-md-4">
-              <div className="dash-card shadow" onClick={() => setView("candidates")}>
+              <div className="dash-card shadow" onClick={() => setView("")}>
                 <div className="icon bg-primary">👤</div>
                 <div>
                   <span className="label">Total Companies</span>
