@@ -81,7 +81,7 @@ export default function Second() {
                                         <td className='td-wrap'>{candidate.comp_name}</td>
                                         <td className='td-wrap'>
                                             <a
-                                                href={`https://${candidate.website}`}
+                                                href={candidate.website}
                                                 target="_blank"
                                                 rel="noreferrer"
                                             >
