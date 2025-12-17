@@ -243,9 +243,9 @@ export default function Candidates() {
                             <div className="model-content-sec">
 
                                 <div className="modal-header">
-                                    <h5 className="modal-title">
-                                        {selectedCandidate.email} - Details
-                                    </h5>
+                                    <h6 className="modal-title">
+                                        <strong>{selectedCandidate.email}</strong> - {selectedCandidate.emp_name}-{selectedCandidate.country_name}
+                                    </h6>
 
                                     <button className="btn-close" onClick={() => setShowModal(false)}></button>
                                 </div>
@@ -254,53 +254,61 @@ export default function Candidates() {
                                     <table className="table table-bordered" style={{ minWidth: "auto" }}>
                                         <tbody>
                                             <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up Date</th>
+                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.first_f_date)}</td>
-                                            </tr>
-                                            <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.first_f_status}</td>
                                             </tr>
+                                            {/* <tr>
+                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up Status</th>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.first_f_status}</td>
+                                            </tr> */}
 
                                             <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up Date</th>
+                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up</th>
+                                                
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}> {formatDate(selectedCandidate.second_f_date)}</td>
-                                            </tr>
-                                            <tr>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
+                                                
+                                                    </tr>
+                                            {/* <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
-                                            </tr>
+                                            </tr> */}
 
                                             <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Third Follow-up Date</th>
+                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Third Follow-up</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.third_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.third_f_status}</td>
+
                                             </tr>
-                                            <tr>
+                                            {/* <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Third Follow-up Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.third_f_status}</td>
-                                            </tr>
+                                            </tr> */}
 
                                             <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Fourth Follow-up Date</th>
+                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Fourth Follow-up</th>
                                                 <td>{formatDate(selectedCandidate.fourth_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.fourth_f_status}</td>
+
                                             </tr>
-                                            <tr>
+                                            {/* <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Fourth Follow-up Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.fourth_f_status}</td>
-                                            </tr>
+                                            </tr> */}
 
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Final Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.final_status}</td>
                                             </tr>
-                                            <tr>
+                                            {/* <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Assigned Employee</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.emp_name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Country</th>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.country_name}</td>
-                                            </tr>
+                                            </tr> */}
+                                                {/* <tr>
+                                                    <th style={{ width: "250px", whiteSpace: "nowrap" }}>Country</th>
+                                                    <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.country_name}</td>
+                                                </tr> */}
                                         </tbody>
                                     </table>
 
