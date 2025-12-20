@@ -413,7 +413,7 @@ tr {
   margin-left: 10px;
   cursor: pointer;
   color: #6BCF9B;
-  transition: all 0.2s ease;
+  transition: all 1.5s ease;
 }
 
 .switch-icon:hover {
