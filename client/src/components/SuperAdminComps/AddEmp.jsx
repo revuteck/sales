@@ -44,7 +44,7 @@ export default function AddEmp() {
         email: "",
         password: "",
       });
-      props.onSuccess(); 
+     
 
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to add employee");
