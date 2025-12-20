@@ -277,7 +277,7 @@ console.log(editData)
                                 </div>
 
                                 {/* FORM (AddEmp also works for edit — pass data via props) */}
-                                <AddEmp employeeData={selectedEmp} onSuccess={fetchEmployees} close={() => setShowModal(false)} />
+                                <AddEmp employeeData={selectedEmp} refresh={fetchEmployees} close={() => setShowModal(false)} />
 
                             </div>
                         </div>
