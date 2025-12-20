@@ -9,7 +9,7 @@ export default function First() {
 
   useEffect(() => {
     axios
-      .get("/api/candidates")
+      .get("https://rev-comp-backend.onrender.com/api/candidates")
       .then((response) => {
         setCandidates(response.data);
       })
@@ -20,7 +20,7 @@ export default function First() {
   /* -------------------- FETCH COUNTRIES -------------------- */
   useEffect(() => {
     axios
-      .get("/api/country/data")
+      .get("https://rev-comp-backend.onrender.com/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
