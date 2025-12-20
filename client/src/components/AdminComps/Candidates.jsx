@@ -23,7 +23,7 @@ export default function Candidates() {
     const [searchCountry, setCountry] = useState("all")
 
     useEffect(() => {
-        axios.get('/api/candidates')
+        axios.get('https://rev-comp-backend.onrender.com/api/candidates')
             .then(response => {
                 setCandidates(response.data);
             })
@@ -33,7 +33,7 @@ export default function Candidates() {
     }, []);
 
     useEffect(() =>{
-        axios.get('/api/country/data')
+        axios.get('https://rev-comp-backend.onrender.com/api/country/data')
         .then(response =>{
             setCountries(response.data);
         })
@@ -43,7 +43,7 @@ export default function Candidates() {
     }, [])
 
     useEffect(() => {
-        axios.get('/api/employee/data')
+        axios.get('https://rev-comp-backend.onrender.com/api/employee/data')
             .then(response => {
                 setEmployee(response.data)
             })
@@ -82,7 +82,7 @@ export default function Candidates() {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`/api/candidates/delete/${id}`);
+            await axios.delete(`https://rev-comp-backend.onrender.com/api/candidates/delete/${id}`);
 
             // Remove from UI immediately
             setCandidates(prev =>
@@ -104,7 +104,7 @@ export default function Candidates() {
             };
 
             await axios.put(
-                `/api/candidates/update/${editCandidate.candidate_id}`,
+                `https://rev-comp-backend.onrender.com/api/candidates/update/${editCandidate.candidate_id}`,
                 payload
             );
 
