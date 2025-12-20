@@ -16,7 +16,7 @@ export default function TodoList() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get(`/api/candidates/emp?empId=${empId}`);
+      const res = await axios.get(`https://rev-comp-backend.onrender.com/api/candidates/emp?empId=${empId}`);
       setCandidates(res.data.empId);
     } catch (err) {
       console.error(err);
@@ -26,7 +26,7 @@ export default function TodoList() {
   /* -------------------- FETCH COUNTRIES -------------------- */
   useEffect(() => {
     axios
-      .get("/api/country/data")
+      .get("https://rev-comp-backend.onrender.com/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -58,7 +58,7 @@ export default function TodoList() {
     if (selectedRows.length === 0) return alert("⚠ Select a candidate!");
 
     try {
-      await axios.put(`/api/candidates/update-status`, {
+      await axios.put(`https://rev-comp-backend.onrender.com/api/candidates/update-status`, {
         ids: selectedRows,
         stage,
       });
