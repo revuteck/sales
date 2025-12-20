@@ -22,7 +22,7 @@ console.log(editData)
     }, []);
 
     const fetchEmployees = () => {
-        axios.get("/api/employee/data")
+        axios.get("https://rev-comp-backend.onrender.com/api/employee/data")
             .then(res => setEmployees(res.data))
             .catch(err => console.error(err));
     };
@@ -35,7 +35,7 @@ console.log(editData)
             const token = localStorage.getItem("token");
 
             await axios.delete(
-                `/api/employee/delete/${id}`,
+                `https://rev-comp-backend.onrender.com/api/employee/delete/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -62,7 +62,7 @@ console.log(editData)
             const token = localStorage.getItem("token");
 
             await axios.put(
-                `/api/employee/update/${editRowId}`,
+                `https://rev-comp-backend.onrender.com/api/employee/update/${editRowId}`,
                 editData,
                 {
                     headers: { Authorization: `Bearer ${token}` }
