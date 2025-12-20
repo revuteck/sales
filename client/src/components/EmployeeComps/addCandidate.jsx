@@ -3,8 +3,10 @@ import axios from "axios";
 import Papa from "papaparse";
 
 
+
 export default function addCandidate() {
   const [csvData, setCsvData] = useState([]);
+
 
 
   const [formData, setFormData] = useState({
@@ -59,6 +61,10 @@ export default function addCandidate() {
 
       setMessage("Candidate Added Successfully!");
       alert("Candidate Added Successfully!")
+      setTimeout(() => {
+        window.location.reload();   // refresh after 1 sec
+      }, 1000); // 1000ms = 1 sec
+
       setFormData({
         domain: "",
         name: "",
@@ -133,7 +139,7 @@ export default function addCandidate() {
           website: r.website,
           email: r.email,
           phone: r.phone && r.phone.trim() !== "" ? r.phone : null,
-          
+
 
 
           dateReg: formatDate(r.date_of_register),
@@ -180,14 +186,17 @@ export default function addCandidate() {
       setCsvMessage("CSV Uploaded Successfully!");
       alert("CSV Uploaded Successfully!")
       setCsvData([]); // reset
+      setTimeout(() => {
+        window.location.reload();   // refresh after 1 sec
+      }, 1000); // 1000ms = 1 sec
     } catch (error) {
-        const msg =
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to upload CSV";
-      
-        setCsvMessage(msg);
-}
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to upload CSV";
+
+      setCsvMessage(msg);
+    }
 
   };
 
@@ -211,7 +220,7 @@ export default function addCandidate() {
           >
             <option value="">Select Country</option>
             <option value="1">Soudi Arebia</option>
-            <option value="2">Singapoor</option>
+            <option value="2">Singapore</option>
             <option value="3">Qatar</option>
             <option value="4">UAE</option>
           </select>
@@ -296,7 +305,7 @@ export default function addCandidate() {
 
         {/* BUTTON */}
         <button type="submit" className="btn btn-success w-100 mt-2">
-          Add Candidate
+          Add Candidates
         </button>
       </form>
       {/* -------------------------------------

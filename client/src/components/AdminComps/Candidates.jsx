@@ -1,19 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddComp from '../AdminComps/addCandidate';
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
+
 
 export default function Candidates() {
 
     const [candidates, setCandidates] = React.useState([]);
+    const [employees, setEmployee] = React.useState([]);
+    const [countries, setCountries] = React.useState([]);
     const [selectedCandidate, setSelectedCandidate] = React.useState(null);
     const [view, setView] = React.useState(null);
     const [showModal, setShowModal] = React.useState(false);
+    const [hoverCandidate, setHoverCandidate] = useState(null);
     const [editCandidate, setEditCandidate] = React.useState(null);
 
 
     const [filterStatus, setFilterStatus] = React.useState("all");
+    const [searchEmp, setSearchEmp] = useState("all");
+    const [searchCountry, setCountry] = useState("all")
 
     useEffect(() => {
         axios.get('/api/candidates')
@@ -24,6 +31,26 @@ export default function Candidates() {
                 console.error('There was an error fetching the candidates!', error);
             });
     }, []);
+
+    useEffect(() =>{
+        axios.get('/api/country/data')
+        .then(response =>{
+            setCountries(response.data);
+        })
+        .catch(error =>{
+            console.error('Error:', error)
+        })
+    }, [])
+
+    useEffect(() => {
+        axios.get('/api/employee/data')
+            .then(response => {
+                setEmployee(response.data)
+            })
+            .catch(error => {
+                console.log("error while fetchin emps", error)
+            })
+    }, [])
 
     // FORMAT DATE
     const formatDate = (dateString) => {
@@ -37,8 +64,18 @@ export default function Candidates() {
 
     // FILTER LOGIC
     const filteredCandidates = candidates.filter((c) => {
-        if (filterStatus === "all") return true;
-        return c.final_status === filterStatus;
+        const statusMatch =
+            filterStatus === "all" ||
+            c.final_status?.trim().toUpperCase() === filterStatus.toUpperCase();
+        const empMatch =
+            searchEmp === "all" ||
+            c.emp_name?.toLowerCase().includes(searchEmp.toLowerCase());
+        const countryMatch =
+            searchCountry === "all" ||
+            c.country_name?.includes(searchCountry)
+        // if (filterStatus === "all") return true;
+        // return c.final_status === filterStatus;
+        return empMatch && statusMatch && countryMatch;
     });
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this company?");
@@ -96,16 +133,49 @@ export default function Candidates() {
 
                 {/* TOP BAR */}
                 <div className="d-flex justify-content-between align-items-center">
-                    <h3>Companies</h3>
+                    <h5>Companies :<span className="count-badge"> {filteredCandidates.length}</span></h5>
 
                     <div className='d-flex' id='tops'>
 
                         {/* STATUS FILTER */}
-                        <div>
-                            {/* <label className='form-label form-lable-status'>Status:</label> */}
+                        <div className="floating-field">
+                            <label className="floating-label">Country</label>
+
+                            <select
+                                className="form-control floating-select"
+                                value={searchCountry}
+                                onChange={(e) => setCountry(e.target.value)}
+                            >
+                                <option value="all">All</option>
+                                {countries.map((c) => (
+                                    <option key={c.country_name} value={c.country_name}>
+                                        {c.country_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="floating-field">
+                            <label className="floating-label">Emp</label>
+
+                            <select
+                                className="form-control floating-select"
+                                value={searchEmp}
+                                onChange={(e) => setSearchEmp(e.target.value)}
+                            >
+                                <option value="all">All</option>
+                                {employees.map((c) => (
+                                    <option key={c.emp_name} value={c.emp_name}>
+                                        {c.emp_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className='floating-field'>
+                            <label className="floating-label">Status:</label>
                             <select
                                 id="status"
-                                className="form-control"
+                                className="form-control floating-select"
                                 value={filterStatus}
                                 onChange={(e) => setFilterStatus(e.target.value)}
                             >
@@ -116,7 +186,7 @@ export default function Candidates() {
                         </div>
 
                         {/* ADD COMPANY BUTTON */}
-                        <div className="ms-2">
+                        <div className="">
                             <button
                                 className="btn btn-success"
                                 onClick={() => {
@@ -144,6 +214,9 @@ export default function Candidates() {
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Registered Date</th>
+                                <th>Emp Name</th>
+                                <th>Country Name</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -153,7 +226,9 @@ export default function Candidates() {
                                 <tr key={candidate.candidate_id}
                                     style={{
                                         backgroundColor:
-                                            candidate.final_status === "COMPLETED" ? "#c8f7c5" : "transparent"
+                                            candidate.final_status.trim().toUpperCase() === "COMPLETED"
+                                                ? "#185b13ff"
+                                                : "red"
                                     }}
                                 >
                                     <td className='td-wrap'>{candidate.candidate_id}</td>
@@ -169,6 +244,17 @@ export default function Candidates() {
                                     <td className='td-wrap'>{candidate.email}</td>
                                     <td className='td-wrap'>{candidate.phone}</td>
                                     <td className='td-wrap'>{formatDate(candidate.date_of_register)}</td>
+                                    <td className='td-wrap'>{candidate.emp_name}</td>
+                                    <td className='td-wrap'>{candidate.country_name}</td>
+                                    <td style={{ width: "100px", padding: "20px" }} className='td-wrap'>
+                                        <div className='stats-bolls-sec'>
+                                            <span className='done'></span>
+                                            <span className={candidate.first_f_status === "DONE" ? "done" : "pending"}></span>
+                                            <span className={candidate.second_f_status === "DONE" ? "done" : "pending"}></span>
+                                            <span className={candidate.third_f_status === "DONE" ? "done" : "pending"}></span>
+                                            <span className={candidate.fourth_f_status === "DONE" ? "done" : "pending"}></span>
+                                        </div>
+                                    </td>
 
                                     <td
                                         className="td-wrap"
@@ -176,52 +262,44 @@ export default function Candidates() {
                                     >
                                         <div
                                             className="d-flex align-items-center justify-content-between"
-                                            style={{ gap: "4px" }}
+                                            style={{ gap: "-1px" }}
                                         >
                                             {/* EDIT + DELETE (5%) */}
                                             <div className="d-flex" style={{ width: "5%", gap: "4px" }}>
                                                 <button
-                                                    className="btn btn-sm btn-primary p-1"
+                                                    className="btn btn-sm  p-1"
                                                     onClick={() => {
                                                         setEditCandidate({ ...candidate });
                                                         setView("edit");
                                                         setShowModal(true);
                                                     }}
                                                 >
-                                                    <FaEdit />
+                                                    <FaEdit className='edit-icon'/>
                                                 </button>
 
 
                                                 <button
-                                                    className="btn btn-sm btn-danger p-1"
+                                                    className="btn btn-sm  p-1"
                                                     onClick={() => handleDelete(candidate.candidate_id)}
                                                 >
-                                                    <FaTrash />
+                                                    <FaTrash className='trash-icon'/>
                                                 </button>
 
 
                                             </div>
 
                                             {/* FOLLOW-UPS (5%) */}
-                                            <button
-                                                style={{
-                                                    width: "",
-                                                    background: "linear-gradient(90deg,#2575fc,#6a11cb)",
-                                                    border: "none",
-                                                    borderRadius: "6px",
-                                                    fontWeight: "400",
-                                                    color: "#fff",
-                                                    padding: "4px 6px",
-                                                    fontSize: "12px",
-                                                    whiteSpace: "nowrap"
-                                                }}
+                                            <button className="follow-up-btn"
                                                 onClick={() => {
                                                     setSelectedCandidate(candidate);
                                                     setShowModal(true);
                                                     setView("followups");
                                                 }}
+                                                onMouseEnter={() => setHoverCandidate(candidate)}
+                                                onMouseLeave={() => setHoverCandidate(null)}
+                                                
                                             >
-                                                Follow-Ups
+                                                <FaBell/>
                                             </button>
                                         </div>
                                     </td>
@@ -234,6 +312,19 @@ export default function Candidates() {
 
 
                 {/* FOLLOW-UPS MODAL */}
+                {hoverCandidate && (
+                    <div className="followup-hover-card">
+                        <div><strong>{hoverCandidate.email}</strong></div>
+                        <hr />
+                        <div><strong>1st:</strong> {formatDate(hoverCandidate.first_f_date)} — {hoverCandidate.first_f_status}</div>
+                        <div><strong>2nd:</strong> {formatDate(hoverCandidate.second_f_date)} — {hoverCandidate.second_f_status}</div>
+                        <div><strong>3rd:</strong> {formatDate(hoverCandidate.third_f_date)} — {hoverCandidate.third_f_status}</div>
+                        <div><strong>4th:</strong> {formatDate(hoverCandidate.fourth_f_date)} — {hoverCandidate.fourth_f_status}</div>
+                        <hr />
+                        <div><strong>Final:</strong> {hoverCandidate.final_status}</div>
+                    </div>
+                )}
+
                 {view === "followups" && showModal && selectedCandidate && (
                     <div className="modal fade show"
                         style={{ display: "block", background: "rgba(0,0,0,0.5)", margin: "0px" }}>
@@ -265,11 +356,11 @@ export default function Candidates() {
 
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up</th>
-                                                
+
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}> {formatDate(selectedCandidate.second_f_date)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
-                                                
-                                                    </tr>
+
+                                            </tr>
                                             {/* <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
@@ -305,7 +396,7 @@ export default function Candidates() {
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Assigned Employee</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.emp_name}</td>
                                             </tr> */}
-                                                {/* <tr>
+                                            {/* <tr>
                                                     <th style={{ width: "250px", whiteSpace: "nowrap" }}>Country</th>
                                                     <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.country_name}</td>
                                                 </tr> */}
@@ -352,7 +443,7 @@ export default function Candidates() {
                                         placeholder="Company Name"
                                     />
 
-                                    
+
 
                                     <input
                                         className="form-control mb-2"

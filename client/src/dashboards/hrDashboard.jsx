@@ -3,15 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import Candidates from '../components/EmployeeComps/Candidates';
 // import AddEmp from '../components/SuperAdminComps/AddEmp';
 // import GetEmp from '../components/SuperAdminComps/getEmp';
-import Pendings from '../components/EmployeeComps/pendings';
-import Dashboard from '../components/EmployeeComps/dashboard'
-import AddCandidate from '../components/SuperAdminComps/addCandidate';
-import TodoList from '../components/EmployeeComps/TodoList';
+// import Pendings from '../components/EmployeeComps/pendings';
+// import Dashboard from '../components/EmployeeComps/dashboard'
+// import AddCandidate from '../components/SuperAdminComps/addCandidate';
+// import TodoList from '../components/EmployeeComps/TodoList';
+import { FiChevronLeft } from "react-icons/fi";
+import { Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+
 
 export default function hrDashboard() {
 
-  const [view, setView] = useState("dashboard");
-  const [adminName, setadminName] = useState(null);
+  // const [view, setView] = useState("dashboard");
+  // const [adminName, setadminName] = useState(null);
   const [activeLink, setActiveLink] = useState("dashboard");  // 👈 new state
   const navigate = useNavigate();
   // console.log(localStorage.getItem("name")+" SUper admin dahsboard::::")
@@ -40,31 +45,51 @@ export default function hrDashboard() {
 
   return (
     <div className='d-flex min-vh-100 w-100 m-0'>
-        
+
       <div className="s-admin-dashboard-left">
         <div className="profile">{localStorage.getItem("name")} <br />
           <span className="sub">{localStorage.getItem("email")}</span>
-          {/* <p>Emp: {localStorage.getItem("name")}</p> */}
+          {localStorage.getItem("role") === "admin" && (
+            <FiChevronLeft
+              className="switch-icon"
+              title="Back to Admin Dashboard"
+              onClick={() => navigate("/admin")}
+            />
+          )}
+
         </div>
-        
+
 
         {/* Navigation */}
         <div className="navigation">
-          <a 
-            href="#" 
+           <NavLink
+              className={activeLink === "todolist" ? "active" : ""}
+              to="dashboard">Dashboard</NavLink>
+            <NavLink
+               className={activeLink === "todolist" ? "active" : ""}
+                        to="candidates">Companies</NavLink>
+            <NavLink
+               className={activeLink === "todolist" ? "active" : ""}
+                        to="todo">TODO Lists</NavLink>
+            <NavLink
+               className={activeLink === "todolist" ? "active" : ""}
+                        to="pendings">Pendings</NavLink>
+                    
+          {/* <a
+            href="#"
             className={activeLink === "dashboard" ? "active" : ""}
             onClick={() => handleNavClick("dashboard")}
           >
             Dashboard
-          </a>
+          </a> */}
 
-          <a 
-            href="#" 
+          {/* <a
+            href="#"
             className={activeLink === "candidates" ? "active" : ""}
             onClick={() => handleNavClick("candidates")}
           >
             Companies
-          </a>
+          </a> */}
 
           {/* <a 
             href="#" 
@@ -90,21 +115,21 @@ export default function hrDashboard() {
             Add Company
           </a> */}
 
-          <a 
-            href="#" 
+          {/* <a
+            href="#"
             className={activeLink === "todolist" ? "active" : ""}
             onClick={() => handleNavClick("todolist")}
           >
             TODO Lists
-          </a>
+          </a> */}
 
-          <a 
-            href="#" 
+          {/* <a
+            href="#"
             className={activeLink === "pendings" ? "active" : ""}
             onClick={() => handleNavClick("pendings")}
           >
             Pendings
-          </a>
+          </a> */}
 
           <button className="logout" onClick={logoutHandle}>
             Logout
@@ -114,13 +139,14 @@ export default function hrDashboard() {
 
       {/* RIGHT SIDE CONTENT */}
       <div className='s-admin-dashboard-right'>
-        {view === "dashboard" && <Dashboard/>}
-        {view === "candidates" && <Candidates />}
+        <Outlet/>
+        {/* {view === "dashboard" && <Dashboard />} */}
+        {/* {view === "candidates" && <Candidates />} */}
         {/* {view === "addemp" && <AddEmp />} */}
         {/* {view === "getEmp" && <GetEmp />} */}
-        {view === "addcandidate" && <AddCandidate/>}
+        {/* {view === "addcandidate" && <AddCandidate />}
         {view === "pendings" && <Pendings />}
-        {view === "todolist" && <TodoList/>}
+        {view === "todolist" && <TodoList />} */}
       </div>
     </div>
   );

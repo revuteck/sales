@@ -8,7 +8,7 @@ export default function Pendings() {
   const [activeStage, setActiveStage] = useState("first"); // default selected
 
   return (
-    <div className="container mt-3">
+    <div className="container">
       {/* ---- FOLLOW UP BUTTONS ---- */}
       <div className="follow-buttons d-flex gap-3 justify-content-center">
         <button

@@ -22,7 +22,7 @@ console.log(editData)
     }, []);
 
     const fetchEmployees = () => {
-        axios.get("https://rev-comp-backend.onrender.com/api/employee/data")
+        axios.get("/api/employee/data")
             .then(res => setEmployees(res.data))
             .catch(err => console.error(err));
     };
@@ -35,7 +35,7 @@ console.log(editData)
             const token = localStorage.getItem("token");
 
             await axios.delete(
-                `https://rev-comp-backend.onrender.com/api/employee/delete/${id}`,
+                `/api/employee/delete/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -62,7 +62,7 @@ console.log(editData)
             const token = localStorage.getItem("token");
 
             await axios.put(
-                `https://rev-comp-backend.onrender.com/api/employee/update/${editRowId}`,
+                `/api/employee/update/${editRowId}`,
                 editData,
                 {
                     headers: { Authorization: `Bearer ${token}` }
@@ -87,14 +87,16 @@ console.log(editData)
 
                 {/* HEADER */}
                 <div className='d-flex justify-content-between align-items-center'>
-                    <h3>Employee</h3>
+                    <h5>Employee : <span className='label  count-badge'>{employees.length}</span></h5>
 
                     <button
                         onClick={() => {
                             setView('addemp');
                             setSelectedEmp(null);
                             setShowModal(true);
-                        }}>
+                        }}
+                        className='btn btn-primary'
+                        >
                         Add Emp
                     </button>
                 </div>
@@ -106,14 +108,14 @@ console.log(editData)
                     <table className='table table-bordered table-hover'>
                         <thead className='table-dark'>
                             <tr>
-                                <th>Emp Id</th>
+                                <th style={{width: "10px"}}>Emp Id</th>
                                 <th>Emp Name</th>
                                 <th>Designation</th>
                                 <th>Login Role</th>
                                 <th>Email</th>
                                 <th>Password</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th style={{width: "10px"}}>Edit</th>
+                                <th style={{width: "10px"}}>Delete</th>
                             </tr>
                         </thead>
 
@@ -227,7 +229,7 @@ console.log(editData)
                                                     setEditRowId(emp.emp_id);
                                                     setEditData({ ...emp });
                                                 }}
-                                                style={{ background: "#007bff", color: "#fff" }}
+                                                style={{ background: "transparent", color: "#656565ff", width: "10px" }}
                                             >
                                                 <FaEdit />
                                             </button>
@@ -238,7 +240,7 @@ console.log(editData)
                                     <td>
                                         <button
                                             onClick={() => deleteEmployee(emp.emp_id)}
-                                            style={{ background: "red", color: "#fff" }}
+                                            style={{ background: "transparent ", color: "#eb8b8bff",width: "10px" }}
                                         >
                                             <FaTrash />
                                         </button>

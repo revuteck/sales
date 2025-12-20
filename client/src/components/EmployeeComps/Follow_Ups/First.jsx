@@ -4,6 +4,8 @@ import axios from "axios";
 export default function First() {
   const [candidates, setCandidates] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [countries, setCountries] = useState([]);
   const empId = Number(localStorage.getItem("id"));
 
   /* ================= FETCH CANDIDATES ================= */
@@ -18,6 +20,14 @@ export default function First() {
 
   useEffect(() => {
     fetchCandidates();
+  }, []);
+
+  /* ================= FETCH COUNTRIES ================= */
+  useEffect(() => {
+    axios
+      .get("/api/country/data")
+      .then((response) => setCountries(response.data))
+      .catch((err) => console.log("Error fetching countries", err));
   }, []);
 
   /* ================= FORMAT DATE ================= */
@@ -42,8 +52,16 @@ export default function First() {
     return followUpDate < today;
   };
 
+  /* ================= APPLY COUNTRY FILTER HERE ================= */
+  const filteredByCountry = candidates.filter((candidate) => {
+    return (
+      countryFilter === "all" ||
+      candidate.country_name?.toLowerCase() === countryFilter.toLowerCase()
+    );
+  });
+
   /* ================= FILTER FIRST FOLLOW UPS ================= */
-  const pendingCandidates = candidates.filter(
+  const pendingCandidates = filteredByCountry.filter(
     (candidate) =>
       candidate.first_f_status === "PENDING" &&
       isPastDate(candidate.first_f_date) &&
@@ -53,9 +71,7 @@ export default function First() {
   /* ================= CHECKBOX HANDLER ================= */
   const handleCheckbox = (id) => {
     setSelectedRows((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
@@ -68,27 +84,55 @@ export default function First() {
     try {
       await axios.put("/api/candidates/update-status", {
         ids: selectedRows,
-        stage: "first", // ✅ fixed
+        stage: "first",
       });
 
       alert("✔ Updated Successfully");
 
       setSelectedRows([]);
-      fetchCandidates(); // refresh table
+      fetchCandidates();
     } catch (error) {
       console.log(error);
       alert("❌ Update Failed");
     }
   };
 
-  /* ================= UI (UNCHANGED CSS) ================= */
+  /* ================= UI ================= */
   return (
     <div className="container">
+
+      
+
       <div className="d-flex justify-content-between align-items-center">
-        <h5 className="mt-4">First Follow Up Pending</h5>
+        <h5 className="">
+          First Follow Up Pending :{" "}
+          <span className="count-badge">{pendingCandidates.length}</span>
+        </h5>
+
+        {/* ******** COUNTRY FILTER ADDED HERE ******** */}
+        <div className="d-flex">
+          <div className="d-flex justify-content-start">
+        <div className="floating-field">
+          <label className="floating-label">Country</label>
+          <select
+            className="form-control floating-select"
+            value={countryFilter}
+            onChange={(e) => setCountryFilter(e.target.value)}
+            style={{ maxWidth: "250px" }}
+          >
+            <option value="all">All</option>
+            {countries.map((country) => (
+              <option key={country.country_name} value={country.country_name}>
+                {country.country_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
         <button className="btn btn-primary btn-sm" onClick={handleSave}>
           Save
         </button>
+        </div>
       </div>
 
       <div className="table-wrapper mt-3 table-wrap">
@@ -124,13 +168,8 @@ export default function First() {
                   </td>
                   <td className="td-wrap">{candidate.email}</td>
                   <td className="td-wrap">{candidate.phone}</td>
-                  <td className="td-wrap">
-                    {formatDate(candidate.date_of_register)}
-                  </td>
-                  <td
-                    className="td-wrap"
-                    style={{ color: "red", fontWeight: "bold" }}
-                  >
+                  <td className="td-wrap">{formatDate(candidate.date_of_register)}</td>
+                  <td className="td-wrap" style={{ color: "red", fontWeight: "bold" }}>
                     {formatDate(candidate.first_f_date)}
                   </td>
                   <td className="td-wrap">{candidate.first_f_status}</td>
@@ -139,12 +178,8 @@ export default function First() {
                   <td>
                     <input
                       type="checkbox"
-                      checked={selectedRows.includes(
-                        candidate.candidate_id
-                      )}
-                      onChange={() =>
-                        handleCheckbox(candidate.candidate_id)
-                      }
+                      checked={selectedRows.includes(candidate.candidate_id)}
+                      onChange={() => handleCheckbox(candidate.candidate_id)}
                     />
                   </td>
                 </tr>

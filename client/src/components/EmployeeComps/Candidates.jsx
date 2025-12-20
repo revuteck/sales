@@ -2,8 +2,10 @@ import React, { useEffect } from 'react'
 import axios from 'axios'
 import '../../assets/css/styles.css'
 import AddComp from './addCandidate';
+import {useState}  from 'react'
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
 
 export default function Candidates() {
     const [candidates, setCandidates] = React.useState([]);
@@ -12,6 +14,11 @@ export default function Candidates() {
     const [showModal, setShowModal] = React.useState(false);
     const [filterStatus, setFilterStatus] = React.useState("all");
     const [editCandidate, setEditCandidate] = React.useState(null);
+    const [hoverCandidate, setHoverCandidate] = React.useState(null);
+    const [countries, setCountries] = React.useState([]);
+    const [searchCountry, setCountry] = useState("all")
+    
+    
     const empId = localStorage.getItem("id");
     useEffect(() => {
         axios.get(`/api/candidates/emp?empId=${empId}`)
@@ -22,7 +29,16 @@ export default function Candidates() {
                 console.error('There was an error fetching the candidates!', error);
             })
     }, [empId]);
-    console.log(candidates)
+        useEffect(() =>{
+        axios.get('/api/country/data')
+        .then(response =>{
+            setCountries(response.data);
+        })
+        .catch(error =>{
+            console.error('Error:', error)
+        })
+    }, [])
+    // console.log(candidates)
 
     //FORMAT DATES
     const formatDate = (dateString) => {
@@ -36,8 +52,12 @@ export default function Candidates() {
         return `${day}-${month}-${year}`;
     };
     const filteredCandidates = candidates.filter((c) => {
-        if (filterStatus === "all") return true;
-        return c.final_status === filterStatus;
+        const stateMatch = filterStatus === "all" ||
+        c.final_status?.trim().toUpperCase() === filterStatus.toUpperCase();
+
+        const countryMatch = searchCountry === "all" ||
+            c.country_name === searchCountry;
+        return stateMatch && countryMatch;
     });
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this company?");
@@ -93,13 +113,29 @@ export default function Candidates() {
         <div>
             <div className=' justify-content-center align-items-center min-vh-100 w-100 m-0'>
                 <div className="d-flex justify-content-between align-items-center">
-                    <h3>Companies</h3>
+                    <h5>Companies : <span className='count-badge'>{filteredCandidates.length}</span></h5>
 
                     <div className='d-flex' id='tops'>
 
                         {/* STATUS FILTER */}
-                        <div>
-                            {/* <label className='form-label form-lable-status'>Status:</label> */}
+                        <div className="floating-field">
+                            <label className="floating-label">Country</label>
+
+                            <select
+                                className="form-control floating-select"
+                                value={searchCountry}
+                                onChange={(e) => setCountry(e.target.value)}
+                            >
+                                <option value="all">All</option>
+                                {countries.map((c) => (
+                                    <option key={c.country_name} value={c.country_name}>
+                                        {c.country_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='floating-field'>
+                            <label className='floating-label'>Status:</label>
                             <select
                                 id="status"
                                 className="form-control"
@@ -139,6 +175,9 @@ export default function Candidates() {
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Registered Date</th>
+                                <th>Emp Name</th>
+                                <th>Country Name</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -163,6 +202,17 @@ export default function Candidates() {
                                     <td className='td-wrap'>{candidate.email}</td>
                                     <td className='td-wrap'>{candidate.phone}</td>
                                     <td className='td-wrap'>{formatDate(candidate.date_of_register)}</td>
+                                    <td className='td-wrap'>{candidate.emp_name}</td>
+                                    <td className='td-wrap'>{candidate.country_name}</td>
+                                    <td style={{ width: "100px", padding: "20px" }} className='td-wrap'>
+                                        <div className='stats-bolls-sec'>
+                                            <span className='done'></span>
+                                            <span className={candidate.first_f_status === "DONE" ? "done" : "pending"}></span>
+                                            <span className={candidate.second_f_status === "DONE" ? "done" : "pending"}></span>
+                                            <span className={candidate.third_f_status === "DONE" ? "done" : "pending"}></span>
+                                            <span className={candidate.fourth_f_status === "DONE" ? "done" : "pending"}></span>
+                                        </div>
+                                    </td>
 
                                     <td
                                         className="td-wrap"
@@ -175,47 +225,40 @@ export default function Candidates() {
                                             {/* EDIT + DELETE (5%) */}
                                             <div className="d-flex" style={{ width: "5%", gap: "4px" }}>
                                                 <button
-                                                    className="btn btn-sm btn-primary p-1"
+                                                    className="btn btn-sm  p-1"
                                                     onClick={() => {
                                                         setEditCandidate({ ...candidate });
                                                         setView("edit");
                                                         setShowModal(true);
                                                     }}
                                                 >
-                                                    <FaEdit />
+                                                    <FaEdit  className='edit-icon'/>
                                                 </button>
 
 
                                                 <button
-                                                    className="btn btn-sm btn-danger p-1"
+                                                    className="btn btn-sm  p-1"
                                                     onClick={() => handleDelete(candidate.candidate_id)}
                                                 >
-                                                    <FaTrash />
+                                                    <FaTrash className="trash-icon" />
+
                                                 </button>
 
 
                                             </div>
 
                                             {/* FOLLOW-UPS (5%) */}
-                                            <button
-                                                style={{
-                                                    width: "",
-                                                    background: "linear-gradient(90deg,#2575fc,#6a11cb)",
-                                                    border: "none",
-                                                    borderRadius: "6px",
-                                                    fontWeight: "400",
-                                                    color: "#fff",
-                                                    padding: "4px 6px",
-                                                    fontSize: "12px",
-                                                    whiteSpace: "nowrap"
-                                                }}
+                                            <button 
+                                                className="follow-up-btn"
                                                 onClick={() => {
                                                     setSelectedCandidate(candidate);
                                                     setShowModal(true);
                                                     setView("followups");
                                                 }}
+                                                onMouseEnter={() => setHoverCandidate(candidate)}
+                                                onMouseLeave={() => setHoverCandidate(null)}
                                             >
-                                                Follow-Ups
+                                                <FaBell/>
                                             </button>
                                         </div>
                                     </td>
@@ -224,6 +267,19 @@ export default function Candidates() {
                         </tbody>
                     </table>
                 </div>
+                {hoverCandidate && (
+                    <div className="followup-hover-card">
+                        <div><strong>{hoverCandidate.email}</strong></div>
+                        <hr />
+                        <div><strong>1st:</strong> {formatDate(hoverCandidate.first_f_date)} — {hoverCandidate.first_f_status}</div>
+                        <div><strong>2nd:</strong> {formatDate(hoverCandidate.second_f_date)} — {hoverCandidate.second_f_status}</div>
+                        <div><strong>3rd:</strong> {formatDate(hoverCandidate.third_f_date)} — {hoverCandidate.third_f_status}</div>
+                        <div><strong>4th:</strong> {formatDate(hoverCandidate.fourth_f_date)} — {hoverCandidate.fourth_f_status}</div>
+                        <hr />
+                        <div><strong>Final:</strong> {hoverCandidate.final_status}</div>
+                    </div>
+                )}
+                
                 {/* FOLLOW-UPS MODAL */}
                 {view === "followups" && showModal && selectedCandidate && (
                     <div className="modal fade show"

@@ -68,7 +68,7 @@ export default function AddCandidate() {
 
     try {
       const token = localStorage.getItem("token");
-      
+
       await axios.post(
         "/api/candidates/add",
         formData,
@@ -76,6 +76,9 @@ export default function AddCandidate() {
       );
 
       setMessage("Candidate Added Successfully!");
+      setTimeout(() => {
+        window.location.reload();   // refresh after 1 sec
+      }, 1000); // 1000ms = 1 sec
 
       setFormData({
         domain: "",
@@ -131,60 +134,60 @@ export default function AddCandidate() {
 
   // GET THE DATA FROM .CSV FILE 
   const handleCSVUpload = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // ❗ Admin must select employee first
-  if (!formData.empID || !formData.empName) {
-    alert("Please select an employee before uploading CSV");
-    return;
-  }
-
-  // ❗ Admin must select country (optional but recommended)
-  
-
-  Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    complete: ({ data }) => {
-
-      const formattedRows = data.map(r => ({
-        domain: r.comp_domain,
-        name: r.comp_name,
-        website: r.website,
-        email: r.email,
-        phone: r.phone && r.phone.trim() !== "" ? r.phone : null,
-
-
-        dateReg: formatDate(r.date_of_register),
-        firstFollow: formatDate(r.first_f_date),
-        firstStatus: r.first_f_status || "PENDING",
-
-        secondFollow: formatDate(r.second_f_date),
-        secondStatus: r.second_f_status || "PENDING",
-
-        thirdFollow: formatDate(r.third_f_date),
-        thirdStatus: r.third_f_status || "PENDING",
-
-        fourthFollow: formatDate(r.fourth_f_date),
-        fourthStatus: r.fourth_f_status || "PENDING",
-
-        finalStatus: r.final_status || "PENDING",
-
-        // ✅ ADMIN ASSIGNMENT (THIS IS THE KEY FIX)
-        empID: formData.empID,
-        empName: formData.empName,
-
-        // ✅ Country from UI (not CSV)
-        countryId: r.country_id,
-        countryName: r.country_name
-      }));
-
-      setCsvData(formattedRows);
-      setCsvMessage(`CSV ready: ${formattedRows.length} records loaded`);
+    // ❗ Admin must select employee first
+    if (!formData.empID || !formData.empName) {
+      alert("Please select an employee before uploading CSV");
+      return;
     }
-  });
-};
+
+    // ❗ Admin must select country (optional but recommended)
+
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: ({ data }) => {
+
+        const formattedRows = data.map(r => ({
+          domain: r.comp_domain,
+          name: r.comp_name,
+          website: r.website,
+          email: r.email,
+          phone: r.phone && r.phone.trim() !== "" ? r.phone : null,
+
+
+          dateReg: formatDate(r.date_of_register),
+          firstFollow: formatDate(r.first_f_date),
+          firstStatus: r.first_f_status || "PENDING",
+
+          secondFollow: formatDate(r.second_f_date),
+          secondStatus: r.second_f_status || "PENDING",
+
+          thirdFollow: formatDate(r.third_f_date),
+          thirdStatus: r.third_f_status || "PENDING",
+
+          fourthFollow: formatDate(r.fourth_f_date),
+          fourthStatus: r.fourth_f_status || "PENDING",
+
+          finalStatus: r.final_status || "PENDING",
+
+          // ✅ ADMIN ASSIGNMENT (THIS IS THE KEY FIX)
+          empID: formData.empID,
+          empName: formData.empName,
+
+          // ✅ Country from UI (not CSV)
+          countryId: r.country_id,
+          countryName: r.country_name
+        }));
+
+        setCsvData(formattedRows);
+        setCsvMessage(`CSV ready: ${formattedRows.length} records loaded`);
+      }
+    });
+  };
 
 
   const handleCSVSubmit = async () => {
@@ -204,17 +207,20 @@ export default function AddCandidate() {
       setCsvMessage("CSV Uploaded Successfully!");
       alert("CSV Uploaded Successfully!")
       setCsvData([]); // reset
+      setTimeout(() => {
+        window.location.reload();   // refresh after 1 sec
+      }, 1000); // 1000ms = 1 sec
     } catch (error) {
-        const msg =
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to upload CSV";
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to upload CSV";
 
       setCsvMessage(msg);
-}
+    }
 
   };
-console.log("Admin csv file data:", csvData)
+  console.log("Admin csv file data:", csvData)
   return (
     <div className="container mt-4">
       {/* <h3 className="mb-3 text-center">Add New Company</h3> */}
@@ -224,7 +230,7 @@ console.log("Admin csv file data:", csvData)
         {/* Employee Dropdown */}
         <div className="mb-3">
           <label className="form-label"><strong>Select Employee</strong></label>
-          <select 
+          <select
             name="empID"
             className="form-control"
             value={formData.empID}
@@ -243,7 +249,7 @@ console.log("Admin csv file data:", csvData)
         {/* Country */}
         <div className="mb-3">
           <label className="form-label">Select Country</label>
-          <select 
+          <select
             name="countryId"
             className="form-control"
             value={formData.countryId}
@@ -263,7 +269,7 @@ console.log("Admin csv file data:", csvData)
         <input className="form-control mb-3" type="text" name="name" placeholder="Company Name" value={formData.name} onChange={handleChange} required />
         <input className="form-control mb-3" type="text" name="website" placeholder="Website" value={formData.website} onChange={handleChange} required />
         <input className="form-control mb-3" type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-        <input className="form-control mb-3" type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange}/>
+        <input className="form-control mb-3" type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
 
         {message && <div className="alert alert-info text-center">{message}</div>}
 
@@ -282,7 +288,7 @@ console.log("Admin csv file data:", csvData)
         {/* Employee Dropdown */}
         <div className="mb-3">
           <label className="form-label"><strong>Select Employee</strong></label>
-          <select 
+          <select
             name="empID"
             className="form-control"
             value={formData.empID}

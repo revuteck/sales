@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import Candidates from '../components/AdminComps/Candidates';
-import AddEmp from '../components/SuperAdminComps/AddEmp';
-import GetEmp from '../components/SuperAdminComps/getEmp';
-import Pendings from '../components/SuperAdminComps/pendings';
-import Dashboard from '../components/AdminComps/dashboard'
-import AddCandidate from '../components/AdminComps/addCandidate';
-import TodoList from '../components/AdminComps/TodoList';
+import { FiChevronRight  } from "react-icons/fi";
 
 export default function SuperAdminDashboard() {
 
-  const [view, setView] = useState("dashboard");
-  const [adminName, setadminName] = useState(null);
+  // const [view, setView] = useState("dashboard");
+  // const [adminName, setadminName] = useState(null);
   const [activeLink, setActiveLink] = useState("dashboard");  // 👈 new state
   const navigate = useNavigate();
   // console.log(localStorage.getItem("name")+" SUper admin dahsboard::::")
@@ -24,10 +20,10 @@ export default function SuperAdminDashboard() {
     }
   }, [navigate]);
 
-  const handleNavClick = (section) => {
-    setView(section);
-    setActiveLink(section); // highlight clicked one
-  };
+  // const handleNavClick = (section) => {
+  //   setView(section);
+  //   setActiveLink(section); // highlight clicked one
+  // };
 
   // Logout function
   const logoutHandle = () => {
@@ -40,39 +36,66 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className='d-flex  min-vh-100 w-100 m-0'>
-        
+
       <div className="s-admin-dashboard-left">
         <div className="profile">{localStorage.getItem("name")} <br />
           <span className="sub">{localStorage.getItem("email")}</span>
+          <FiChevronRight 
+            className="switch-icon"
+            title="Switch to Employee Dashboard"
+            onClick={() => navigate("/hr")}
+          />
+
+
           {/* <p>Emp: {localStorage.getItem("name")}</p> */}
         </div>
-        
+
 
         {/* Navigation */}
         <div className="navigation">
-          <a 
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="dashboard">Dashboard</NavLink>
+
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="all-candidates">Companies</NavLink>
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="emps">Employees</NavLink>
+
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="all-todo"
+          >TODO Lists</NavLink>
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="all-pendings"
+          >Pendings</NavLink>
+
+          {/* <a 
             href="#" 
             className={activeLink === "dashboard" ? "active" : ""}
             onClick={() => handleNavClick("dashboard")}
           >
             Dashboard
-          </a>
+          </a> */}
 
-          <a 
+          {/* <a 
             href="#" 
             className={activeLink === "candidates" ? "active" : ""}
             onClick={() => handleNavClick("candidates")}
           >
             Companies
-          </a>
+          </a> */}
 
-          <a 
+          {/* <a 
             href="#" 
             className={activeLink === "employees" ? "active" : ""}
             onClick={() => handleNavClick("employees")}
           >
             Employees
-          </a>
+          </a> */}
 
           {/* <a 
             href="#" 
@@ -89,7 +112,7 @@ export default function SuperAdminDashboard() {
           >
             Add New Company
           </a> */}
-     <a href="#" 
+          {/* <a href="#" 
             className={activeLink === "todolist" ? "active" : ""}
             onClick={() => handleNavClick("todolist")}>
             TODO Lists
@@ -100,7 +123,7 @@ export default function SuperAdminDashboard() {
             onClick={() => handleNavClick("pendings")}
           >
             Pendings
-          </a>
+          </a> */}
 
           <button className="logout" onClick={logoutHandle}>
             Logout
@@ -110,13 +133,14 @@ export default function SuperAdminDashboard() {
 
       {/* RIGHT SIDE CONTENT */}
       <div className='s-admin-dashboard-right'>
-        {view === "dashboard" && <Dashboard/>}
-        {view === "candidates" && <Candidates />}
-        {view === "addemp" && <AddEmp />}
-        {view === "employees" && <GetEmp />}
-        {view === "addcandidate" && <AddCandidate/>}
+        {/* {view === "dashboard" && <Dashboard/>} */}
+        {/* {view === "candidates" && <Candidates />} */}
+        <Outlet />
+        {/* {view === "addemp" && <AddEmp />} */}
+        {/* {view === "employees" && <GetEmp />} */}
+        {/* {view === "addcandidate" && <AddCandidate/>}
         {view === "pendings" && <Pendings />}
-        {view === "todolist" && <TodoList/>}
+        {view === "todolist" && <TodoList/>} */}
       </div>
     </div>
   );

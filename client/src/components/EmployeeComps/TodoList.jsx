@@ -4,7 +4,9 @@ import axios from "axios";
 export default function TodoList() {
   const [candidates, setCandidates] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [activeStage, setActiveStage] = useState("first"); // <-- NEW
+  const [activeStage, setActiveStage] = useState("first");
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [countries, setCountries] = useState([]);
 
   const empId = localStorage.getItem("id");
 
@@ -14,14 +16,20 @@ export default function TodoList() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get(
-        `/api/candidates/emp?empId=${empId}`
-      );
+      const res = await axios.get(`/api/candidates/emp?empId=${empId}`);
       setCandidates(res.data.empId);
     } catch (err) {
       console.error(err);
     }
   };
+
+  /* -------------------- FETCH COUNTRIES -------------------- */
+  useEffect(() => {
+    axios
+      .get("/api/country/data")
+      .then((response) => setCountries(response.data))
+      .catch((err) => console.log("Error fetching countries", err));
+  }, []);
 
   const formatDate = (dateString) => {
     if (!dateString) return "—";
@@ -71,34 +79,73 @@ export default function TodoList() {
     { key: "fourth", status: "fourth_f_status", date: "fourth_f_date", label: "Fourth Follow Up" },
   ];
 
+  /* ---------------- COUNTRY FILTER APPLIED HERE ---------------- */
+  const filteredCandidates = candidates.filter((c) => {
+    const countryMatch =
+      countryFilter === "all" ||
+      c.country_name?.toLowerCase() === countryFilter.toLowerCase();
+
+    return countryMatch;
+  });
+
+  /* ---------------- GROUPED USING FILTERED CANDIDATES ---------------- */
   const grouped = Object.fromEntries(
     stages.map((s) => [
       s.key,
-      candidates.filter(
+      filteredCandidates.filter(
         (c) => isToday(c[s.date]) && c[s.status] === "PENDING"
       ),
     ])
   );
 
   const renderTable = (label, list, stageKey, statusField, dateField) => (
-    <div className="section-block mt-4">
+    <div className="section-block">
       <div className="d-flex justify-content-between align-items-center">
-        <h5 className="m-0">{label}</h5>
-        <button className="btn btn-primary btn-sm" onClick={() => handleSave(stageKey)}>
+        <h5 className="m-0">
+          {label} : <span className="count-badge">{list.length}</span>
+        </h5>
+
+
+        {/* -------- COUNTRY FILTER UI ADDED HERE -------- */}
+      <div className="d-flex ">
+        <div className="floating-field">
+          <label className="floating-label">Country</label>
+          <select
+            className="form-control floating-select"
+            value={countryFilter}
+            onChange={(e) => setCountryFilter(e.target.value)}
+            style={{ maxWidth: "250px" }}
+          >
+            <option value="all">All</option>
+            {countries.map((country) => (
+              <option key={country.country_name} value={country.country_name}>
+                {country.country_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={() => handleSave(stageKey)}
+        >
           Save
         </button>
       </div>
+        
+      </div>
 
       <div className="table-wrapper mt-3 table-wrap">
-        <table className="table table-bordered table-hover  ">
+        <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th style={{width: '10px'}}>ID</th>
+              <th style={{ width: "10px" }}>ID</th>
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
               <th>Email</th>
               <th>Phone</th>
+              <th>Country Name</th>
               <th>Follow Up</th>
               <th>Status</th>
               <th>Update</th>
@@ -119,12 +166,9 @@ export default function TodoList() {
                   </td>
                   <td className="td-wrap">{c.email}</td>
                   <td className="td-wrap">{c.phone}</td>
+                  <td className="td-wrap">{c.country_name}</td>
                   <td className="td-wrap">{formatDate(c[dateField])}</td>
-
-                  <td className="td-wrap">
-                    {c[statusField]}
-                  </td>
-
+                  <td className="td-wrap">{c[statusField]}</td>
                   <td>
                     <input
                       type="checkbox"
@@ -151,14 +195,19 @@ export default function TodoList() {
   return (
     <div className="container">
 
-      {/* ---- NEW 4 BUTTONS ---- */}
+      
+
+      {/* -------- STAGE BUTTONS -------- */}
       <div className="d-flex gap-2 justify-content-center flex-wrap">
         {stages.map((s) => (
           <button
             key={s.key}
             onClick={() => setActiveStage(s.key)}
-            className={`btn m-1 ${activeStage === s.key ? "btn-dark active-btn" : "btn-outline-dark"
-              }`}
+            className={`btn m-1 ${
+              activeStage === s.key
+                ? "btn-dark active-btn"
+                : "btn-outline-dark"
+            }`}
             style={{ minWidth: "140px" }}
           >
             {s.label}
@@ -166,8 +215,7 @@ export default function TodoList() {
         ))}
       </div>
 
-
-      {/* Show only selected stage */}
+      {/* -------- TABLE FOR SELECTED STAGE -------- */}
       {stages
         .filter((s) => s.key === activeStage)
         .map((s) =>

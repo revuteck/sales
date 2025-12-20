@@ -8,7 +8,7 @@ export default function Pendings() {
   const [activeView, setActiveView] = useState("first"); // default selected
 
   return (
-    <div className="container mt-3">
+    <div className="container">
       <div className="d-flex flex-column align-items-center">
 
         {/* ---- BUTTONS ---- */}

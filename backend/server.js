@@ -37,8 +37,9 @@ app.use("/api/employee", employeeRoutes);
 const bulkCandidates = require("./src/routes/addBulk")
 app.use("/api/bulk/candidates", bulkCandidates)
 
-//get the candidates with emp id
-
+//countries data
+const countryRoute = require("./src/routes/countryRoute")
+app.use("/api/country", countryRoute)
 // Start Server
 app.listen(PORT, () => 
     console.log(`Server running on port ${PORT}`)

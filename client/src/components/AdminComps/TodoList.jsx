@@ -4,20 +4,34 @@ import axios from "axios";
 export default function TodoList() {
   const [candidates, setCandidates] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [activeStage, setActiveStage] = useState("first"); // <-- NEW
+  const [activeStage, setActiveStage] = useState("first");
+  const [empFilter, setEmpFilter] = useState("all");
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [countries, setCountries] = useState([]);
 
+  /* -------------------- FETCH CANDIDATES -------------------- */
   useEffect(() => {
     fetchCandidates();
   }, []);
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get(`/api/candidates`);
+      const res = await axios.get("/api/candidates");
       setCandidates(res.data);
     } catch (err) {
       console.error(err);
     }
   };
+
+  /* -------------------- FETCH COUNTRIES -------------------- */
+  useEffect(() => {
+    axios
+      .get("/api/country/data")
+      .then((response) => setCountries(response.data))
+      .catch((err) => console.log("Error fetching countries", err));
+  }, []);
+
+  /* -------------------- HELPERS -------------------- */
 
   const formatDate = (dateString) => {
     if (!dateString) return "—";
@@ -36,17 +50,24 @@ export default function TodoList() {
     return d.getTime() === t.getTime();
   };
 
+  /* -------------------- CHECKBOX -------------------- */
+
   const handleCheckbox = (id) => {
     setSelectedRows((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
+  /* -------------------- SAVE -------------------- */
+
   const handleSave = async (stage) => {
-    if (selectedRows.length === 0) return alert("⚠ Select a candidate!");
+    if (selectedRows.length === 0) {
+      alert("⚠ Please select at least one candidate");
+      return;
+    }
 
     try {
-      await axios.put(`/api/candidates/update-status`, {
+      await axios.put("/api/candidates/update-status", {
         ids: selectedRows,
         stage,
       });
@@ -54,11 +75,13 @@ export default function TodoList() {
       alert("✔ Updated Successfully");
       setSelectedRows([]);
       fetchCandidates();
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error(err);
       alert("❌ Update Failed");
     }
   };
+
+  /* -------------------- STAGES -------------------- */
 
   const stages = [
     { key: "first", status: "first_f_status", date: "first_f_date", label: "First Follow Up" },
@@ -67,24 +90,88 @@ export default function TodoList() {
     { key: "fourth", status: "fourth_f_status", date: "fourth_f_date", label: "Fourth Follow Up" },
   ];
 
+  /* -------------------- FILTERS -------------------- */
+
+  const filteredList = candidates
+    .filter(
+      (c) =>
+        empFilter === "all" ||
+        (c.emp_name &&
+          c.emp_name.toLowerCase() === empFilter.toLowerCase())
+    )
+    .filter(
+      (c) =>
+        countryFilter === "all" ||
+        (c.country_name &&
+          c.country_name.toLowerCase() === countryFilter.toLowerCase())
+    );
+
+  /* -------------------- GROUPED DATA -------------------- */
+
   const grouped = Object.fromEntries(
     stages.map((s) => [
       s.key,
-      candidates.filter(
+      filteredList.filter(
         (c) => isToday(c[s.date]) && c[s.status] === "PENDING"
       ),
     ])
   );
 
+  /* -------------------- TABLE RENDER -------------------- */
+
   const renderTable = (label, list, stageKey, statusField, dateField) => (
     <div className="section-block">
       <div className="d-flex justify-content-between align-items-center">
-        <h5 className="m-0">{label}</h5>
-        <button className="btn btn-primary btn-sm" onClick={() => handleSave(stageKey)}>
-          Save
-        </button>
+        <h5 className="m-0">
+          {label}: <span className="count-badge">{list.length}</span>
+        </h5>
+
+        <div className="d-flex">
+
+          {/* Country Filter */}
+          <div className="floating-field">
+            <label className="floating-label">Country</label>
+            <select
+              className="form-control floating-select"
+              style={{ maxWidth: "200px" }}
+              value={countryFilter}
+              onChange={(e) => setCountryFilter(e.target.value)}
+            >
+              <option value="all">All</option>
+              {countries.map((country) => (
+                <option key={country.country_name} value={country.country_name}>
+                  {country.country_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Employee Filter */}
+          <div className="floating-field">
+            <label className="floating-label">Emp</label>
+            <select
+              className="form-control floating-select"
+              value={empFilter}
+              onChange={(e) => setEmpFilter(e.target.value)}
+            >
+              <option value="all">All Employees</option>
+              {[...new Set(candidates.map((c) => c.emp_name).filter(Boolean))].map((emp) => (
+                <option key={emp} value={emp}>
+                  {emp}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="">
+            <button className="btn btn-primary btn-sm" onClick={() => handleSave(stageKey)}>
+              Save
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* TABLE */}
       <div className="table-wrapper mt-3 table-wrap">
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
@@ -95,6 +182,8 @@ export default function TodoList() {
               <th>Website</th>
               <th>Email</th>
               <th>Phone</th>
+              <th>Emp Name</th>
+              <th>Country</th>
               <th>Follow Up</th>
               <th>Status</th>
               <th>Update</th>
@@ -105,19 +194,21 @@ export default function TodoList() {
             {list.length > 0 ? (
               list.map((c) => (
                 <tr key={c.candidate_id}>
-                  <td class="td-wrap">{c.candidate_id}</td>
-                  <td class="td-wrap">{c.comp_domain}</td>
-                  <td class="td-wrap">{c.comp_name}</td>
-                  <td class="td-wrap">
+                  <td>{c.candidate_id}</td>
+                  <td>{c.comp_domain}</td>
+                  <td>{c.comp_name}</td>
+                  <td>
                     <a href={c.website} target="_blank" rel="noreferrer">
                       {c.website}
                     </a>
                   </td>
-                  <td class="td-wrap">{c.email}</td>
-                  <td class="td-wrap">{c.phone}</td>
-                  <td class="td-wrap">{formatDate(c[dateField])}</td>
-                  <td class="td-wrap">{c[statusField]}</td>
-                  <td class="td-wrap">
+                  <td>{c.email}</td>
+                  <td>{c.phone}</td>
+                  <td>{c.emp_name}</td>
+                  <td>{c.country_name}</td>
+                  <td>{formatDate(c[dateField])}</td>
+                  <td>{c[statusField]}</td>
+                  <td>
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(c.candidate_id)}
@@ -129,7 +220,9 @@ export default function TodoList() {
               ))
             ) : (
               <tr>
-                <td colSpan="10" className="text-center text-muted"><strong>🎉 No TODO List</strong></td>
+                <td colSpan="11" className="text-center text-muted">
+                  <strong>🎉 No TODO List</strong>
+                </td>
               </tr>
             )}
           </tbody>
@@ -138,17 +231,20 @@ export default function TodoList() {
     </div>
   );
 
-  return (
-    <div className="container mt-3">
+  /* -------------------- UI -------------------- */
 
-      {/* -------- BUTTONS ADDED HERE -------- */}
+  return (
+    <div className="container">
+
+      {/* Stage Buttons */}
       <div className="d-flex gap-2 flex-wrap justify-content-center">
         {stages.map((s) => (
           <button
             key={s.key}
             onClick={() => setActiveStage(s.key)}
-            className={`btn m-1 ${activeStage === s.key ? "btn-dark active-btn" : "btn-outline-dark"
-              }`}
+            className={`btn m-1 ${
+              activeStage === s.key ? "btn-dark active-btn" : "btn-outline-dark"
+            }`}
             style={{ minWidth: "140px" }}
           >
             {s.label}
@@ -156,8 +252,7 @@ export default function TodoList() {
         ))}
       </div>
 
-      {/* ------------------------------------ */}
-
+      {/* Active Table */}
       {stages
         .filter((s) => s.key === activeStage)
         .map((s) =>

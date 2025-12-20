@@ -7,7 +7,19 @@ export default function Dashboard() {
   const [counts, setCounts] = useState({
     total_todo: 0,
     candidates: 0,
-    pending: 0
+    completedcomps: 0,
+    pendingcomps: 0,
+    mailspending: 0,
+    totalmailstobesent: 0,
+    totalpendings:0,
+    first_pendings:0,
+    second_pendings:0,
+    third_pendings:0,
+    fourth_pendings:0,
+    first_remains:0,
+    second_remains:0,
+    third_remains:0,
+    fourth_remains:0,
   });
 
   useEffect(() => {
@@ -81,7 +93,25 @@ export default function Dashboard() {
       setCounts({
         total_todo: totalTodo,
         candidates: myCompanies.length,
-        pending: total_pendings
+        completedcomps: myCompanies.filter( c=> c.final_status === "COMPLETED").length,
+        pendingcomps: myCompanies.filter(c => c.final_status === "PENDING").length,
+        mailspending: total_pendings,
+        totalmailstobesent: myCompanies.filter(c => c.first_f_status === "PENDING").length+
+                            myCompanies.filter(c => c.second_f_status === "PENDING").length+
+                            myCompanies.filter(c => c.third_f_status === "PENDING").length+
+                            myCompanies.filter(c => c.fourth_f_status === "PENDING").length,
+        first_remains: myCompanies.filter(c => c.first_f_status === "PENDING").length,
+        second_remains: myCompanies.filter(c => c.second_f_status === "PENDING").length,
+        third_remains: myCompanies.filter(c => c.third_f_status === "PENDING").length,
+        fourth_remains: myCompanies.filter(c => c.fourth_f_status === "PENDING").length,
+        totalpendings: myCompanies.filter(c => c.first_f_status === "PENDING" && isPending(c.first_f_date)).length +
+                       myCompanies.filter(c => c.second_f_status === "PENDING" && isPending(c.second_f_date)).length +
+                       myCompanies.filter(c => c.third_f_status === "PENDING" && isPending(c.third_f_date)).length +
+                       myCompanies.filter(c => c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date)).length,
+        first_pendings:myCompanies.filter(c => c.first_f_status === "PENDING" && isPending(c.first_f_date)).length,
+        second_pendings: myCompanies.filter(c => c.second_f_status === "PENDING" && isPending(c.second_f_date)).length,
+        third_pendings:myCompanies.filter(c => c.third_f_status === "PENDING" && isPending(c.third_f_date)).length,
+        fourth_pendings:myCompanies.filter(c => c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date)).length
       });
 
     } catch (err) {
@@ -102,9 +132,26 @@ export default function Dashboard() {
             <div className="col-md-4">
               <div className="dash-card shadow" onClick={() => setView("")}>
                 <div className="icon bg-primary">👤</div>
-                <div>
-                  <span className="label">Total Companies</span>
-                  <h2 className="value">{counts.candidates}</h2>
+                <div className="card-sec">
+                  
+                  <tr>
+                    <th style={{width: "113px"}}><span className="label count-span">Total Companies</span></th>
+                    <td><h2 className="value">: {counts.candidates}</h2></td>
+                  </tr>
+
+                  <tr>
+                    <th style={{width: "113px"}}><span className="label count-span">Total Pendings </span></th>
+                    <td><h2 className="value">: {counts.pendingcomps}</h2></td>
+                  </tr>
+
+                  <tr>
+                    <th style={{width: "113px"}}><span className="label count-span">Total Completed </span></th>
+                    <td><h2 className="value">: {counts.completedcomps}</h2></td>
+                  </tr>
+                  
+                  
+                  
+                  
                 </div>
               </div>
             </div>
@@ -123,8 +170,25 @@ export default function Dashboard() {
               <div className="dash-card shadow">
                 <div className="icon bg-danger">⏳</div>
                 <div>
-                  <span className="label">Total Pending</span>
-                  <h2 className="value text-danger">{counts.pending}</h2>
+                  <tr>
+                    <th style={{width: "94px"}}><span className="label count-span">Total Mails</span></th>
+                    <td> <h2 className="value text-danger">: {counts.candidates*4}</h2></td>
+                  </tr>
+                  <tr>
+                    <th style={{width: "94px"}}><span className="label count-span">Remainings</span></th>
+                    <td><span>: {counts.first_remains}+{counts.second_remains}+{counts.third_remains}+{counts.fourth_remains}</span></td>
+                    <td><h2 className="value text-danger">={counts.totalmailstobesent}</h2></td>
+                  </tr>
+                  <tr>
+                    <th style={{width: "94px"}}><span className="label count-span">Pendings</span></th>
+                    <td><span>: {counts.first_pendings}+{counts.second_pendings}+{counts.third_pendings}+{counts.fourth_pendings}</span>
+                    </td>
+                    <td><h2 className="value text-danger">={counts.totalpendings}</h2></td>
+                  </tr>
+                  
+                  
+                  
+                  
                 </div>
               </div>
             </div>

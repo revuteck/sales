@@ -4,8 +4,12 @@ import axios from "axios";
 export default function Fourth() {
   const [candidates, setCandidates] = useState([]);
   const empId = Number(localStorage.getItem("id"));
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [countries, setCountries] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  
 
-  useEffect(() => {
+  const fetchCandidates= async() => {
     axios
       .get("/api/candidates")
       .then((response) => {
@@ -14,7 +18,19 @@ export default function Fourth() {
       .catch((error) => {
         console.log("There was an error fetching candidates: " + error);
       });
-  }, []); // <-- FIXED
+  }; // <-- FIXED
+  useEffect(()=>{
+    fetchCandidates();
+  }, [])
+
+    /* ================= FETCH COUNTRIES ================= */
+  useEffect(() => {
+    axios
+      .get("/api/country/data")
+      .then((response) => setCountries(response.data))
+      .catch((err) => console.log("Error fetching countries", err));
+  }, []);
+
 
   // Format Dates
   const formatDate = (dateString) => {
@@ -36,6 +52,13 @@ export default function Fourth() {
 
     return followDate < today;
   };
+  /* ================= APPLY COUNTRY FILTER HERE ================= */
+  const filteredByCountry = candidates.filter((candidate) => {
+    return (
+      countryFilter === "all" ||
+      candidate.country_name?.toLowerCase() === countryFilter.toLowerCase()
+    );
+  });
 
   // Filter pending candidates
   const pendingCandidates = candidates.filter(
@@ -44,11 +67,67 @@ export default function Fourth() {
       isPastDate(candidate.fourth_f_date) &&
       candidate.assigned_emp_id === empId
   );
+  /* ================= CHECKBOX HANDLER ================= */
+  const handleCheckbox = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id]
+    );
+  };
+
+  /* ================= UPDATE STATUS ================= */
+  const handleSave = async () => {
+    if (selectedRows.length === 0) {
+      return alert("⚠ Select at least one candidate!");
+    }
+
+    try {
+      await axios.put("/api/candidates/update-status", {
+        ids: selectedRows,
+        stage: "fourth", // ✅ fixed
+      });
+
+      alert("✔ Updated Successfully");
+
+      setSelectedRows([]);
+      fetchCandidates(); // refresh table
+    } catch (error) {
+      console.log(error);
+      alert("❌ Update Failed");
+    }
+  };
 
   return (
-    <div className="container mt-3">
-      <h5 className="mt-3">Fourth Follow-Up Pending</h5>
+    <div className="container">
+      <div className="d-flex justify-content-between align-items-center">
 
+      <h5 className="">Fourth Follow-Up Pending :<span className="count-badge">{pendingCandidates.length}</span></h5>
+      {/* ******** COUNTRY FILTER ADDED HERE ******** */}
+        <div className="d-flex">
+          <div className="d-flex justify-content-start">
+        <div className="floating-field">
+          <label className="floating-label">Country</label>
+          <select
+            className="form-control floating-select"
+            value={countryFilter}
+            onChange={(e) => setCountryFilter(e.target.value)}
+            style={{ maxWidth: "250px" }}
+          >
+            <option value="all">All</option>
+            {countries.map((country) => (
+              <option key={country.country_name} value={country.country_name}>
+                {country.country_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+        <button className="btn btn-primary btn-sm" onClick={handleSave}>
+          Save
+        </button>
+        </div>
+      </div>
       <div className="table-wrapper mt-3  table-wrap">
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
@@ -62,9 +141,10 @@ export default function Fourth() {
               <th>Registered</th>
               <th>4th Follow-up</th>
               <th>Status</th>
-              {/* <th>Assigned Emp</th> */}
+              <th>Assigned Emp</th>
               <th>Employee</th>
               <th>Country</th>
+              <th>Update</th>
             </tr>
           </thead>
 
@@ -94,6 +174,17 @@ export default function Fourth() {
                   {/* <td>{candidate.assigned_emp_id}</td> */}
                   <td class="td-wrap">{candidate.emp_name}</td>
                   <td class="td-wrap">{candidate.country_name}</td>
+                   <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.includes(
+                        candidate.candidate_id
+                      )}
+                      onChange={() =>
+                        handleCheckbox(candidate.candidate_id)
+                      }
+                    />
+                  </td>
                 </tr>
               ))
             ) : (
