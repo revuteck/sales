@@ -44,6 +44,9 @@ export default function AddEmp() {
         email: "",
         password: "",
       });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // reload after 1 se
      
 
     } catch (error) {
