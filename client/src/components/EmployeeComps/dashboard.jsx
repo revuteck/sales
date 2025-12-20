@@ -50,7 +50,7 @@ export default function Dashboard() {
         return d.getTime() < t.getTime();
 
       }
-      const { data } = await axios.get("/api/candidates", {
+      const { data } = await axios.get("https://rev-comp-backend.onrender.com/api/candidates", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
