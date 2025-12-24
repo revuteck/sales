@@ -189,7 +189,7 @@ export default function Fourth() {
               ))
             ) : (
               <tr>
-                <td colSpan="12" className="text-center text-muted">
+                <td colSpan="13" className="text-center text-muted">
                   <strong>🎉 No Pending Follow Ups</strong>
                 </td>
               </tr>
