@@ -2,10 +2,13 @@ import React, { useEffect } from 'react'
 import axios from 'axios'
 import '../../assets/css/styles.css'
 import AddComp from './addCandidate';
-import {useState}  from 'react'
+import UploadCSV from './uploadCSV';
+import { useState } from 'react'
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
+import { FaFileExcel } from "react-icons/fa";
+
 
 export default function Candidates() {
     const [candidates, setCandidates] = React.useState([]);
@@ -17,8 +20,8 @@ export default function Candidates() {
     const [hoverCandidate, setHoverCandidate] = React.useState(null);
     const [countries, setCountries] = React.useState([]);
     const [searchCountry, setCountry] = useState("all")
-    
-    
+
+
     const empId = localStorage.getItem("id");
     useEffect(() => {
         axios.get(`https://rev-comp-backend.onrender.com/api/candidates/emp?empId=${empId}`)
@@ -29,14 +32,14 @@ export default function Candidates() {
                 console.error('There was an error fetching the candidates!', error);
             })
     }, [empId]);
-        useEffect(() =>{
+    useEffect(() => {
         axios.get('https://rev-comp-backend.onrender.com/api/country/data')
-        .then(response =>{
-            setCountries(response.data);
-        })
-        .catch(error =>{
-            console.error('Error:', error)
-        })
+            .then(response => {
+                setCountries(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
     }, [])
     // console.log(candidates)
 
@@ -53,7 +56,7 @@ export default function Candidates() {
     };
     const filteredCandidates = candidates.filter((c) => {
         const stateMatch = filterStatus === "all" ||
-        c.final_status?.trim().toUpperCase() === filterStatus.toUpperCase();
+            c.final_status?.trim().toUpperCase() === filterStatus.toUpperCase();
 
         const countryMatch = searchCountry === "all" ||
             c.country_name === searchCountry;
@@ -116,6 +119,24 @@ export default function Candidates() {
                     <h5>Companies : <span className='count-badge'>{filteredCandidates.length}</span></h5>
 
                     <div className='d-flex' id='tops'>
+                        <div className="floating-field">
+                            <button className="btn btn-primary"
+                                onClick={() => {
+                                    setView("uploadcsv");
+                                    setShowModal(true);
+                                }}
+                            >
+                                <span>
+                                    <FaFileExcel
+                                        size={20}
+                                        color="white"
+                                        style={{ marginTop: "-8px", marginLeft: "-8px" }}
+                                    />
+
+                                </span>
+                                .CSV Upload</button>
+
+                        </div>
 
                         {/* STATUS FILTER */}
                         <div className="floating-field">
@@ -232,7 +253,7 @@ export default function Candidates() {
                                                         setShowModal(true);
                                                     }}
                                                 >
-                                                    <FaEdit  className='edit-icon'/>
+                                                    <FaEdit className='edit-icon' />
                                                 </button>
 
 
@@ -248,7 +269,7 @@ export default function Candidates() {
                                             </div>
 
                                             {/* FOLLOW-UPS (5%) */}
-                                            <button 
+                                            <button
                                                 className="follow-up-btn"
                                                 onClick={() => {
                                                     setSelectedCandidate(candidate);
@@ -258,7 +279,7 @@ export default function Candidates() {
                                                 onMouseEnter={() => setHoverCandidate(candidate)}
                                                 onMouseLeave={() => setHoverCandidate(null)}
                                             >
-                                                <FaBell/>
+                                                <FaBell />
                                             </button>
                                         </div>
                                     </td>
@@ -279,7 +300,7 @@ export default function Candidates() {
                         <div><strong>Final:</strong> {hoverCandidate.final_status}</div>
                     </div>
                 )}
-                
+
                 {/* FOLLOW-UPS MODAL */}
                 {view === "followups" && showModal && selectedCandidate && (
                     <div className="modal fade show"
@@ -312,11 +333,11 @@ export default function Candidates() {
 
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up</th>
-                                                
+
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}> {formatDate(selectedCandidate.second_f_date)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
-                                                
-                                                    </tr>
+
+                                            </tr>
                                             {/* <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
@@ -352,7 +373,7 @@ export default function Candidates() {
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Assigned Employee</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.emp_name}</td>
                                             </tr> */}
-                                                {/* <tr>
+                                            {/* <tr>
                                                     <th style={{ width: "250px", whiteSpace: "nowrap" }}>Country</th>
                                                     <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.country_name}</td>
                                                 </tr> */}
@@ -399,7 +420,7 @@ export default function Candidates() {
                                         placeholder="Company Name"
                                     />
 
-                                    
+
 
                                     <input
                                         className="form-control mb-2"
@@ -460,6 +481,27 @@ export default function Candidates() {
                                 </div>
 
                                 <AddComp />
+                            </div>
+                        </div>
+
+                    </div>
+                )}
+                {view === "uploadcsv" && showModal && (
+                    <div className="modal fade show"
+                        style={{ display: "block", background: "rgba(0,0,0,0.5)" }}>
+
+                        <div className="modal-dialog" style={{ maxWidth: "auto", width: "auto" }}>
+                            <div className="model-content-sec" style={{ position: "relative" }}>
+
+                                <div className="d-flex justify-content-between align-items-center"
+                                    style={{ padding: "10px 20px" }}>
+
+                                    <h4 className="m-0">Add New Company</h4>
+
+                                    <button className="btn-close" onClick={() => setShowModal(false)}></button>
+                                </div>
+
+                                <UploadCSV />
                             </div>
                         </div>
 

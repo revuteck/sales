@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddComp from '../AdminComps/addCandidate';
+import UploadCSV from '../AdminComps/uploadCSV'
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
+import { FaFileExcel } from "react-icons/fa";
+
 
 
 export default function Candidates() {
@@ -32,14 +35,14 @@ export default function Candidates() {
             });
     }, []);
 
-    useEffect(() =>{
+    useEffect(() => {
         axios.get('https://rev-comp-backend.onrender.com/api/country/data')
-        .then(response =>{
-            setCountries(response.data);
-        })
-        .catch(error =>{
-            console.error('Error:', error)
-        })
+            .then(response => {
+                setCountries(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error)
+            })
     }, [])
 
     useEffect(() => {
@@ -136,8 +139,21 @@ export default function Candidates() {
                     <h5>Companies :<span className="count-badge"> {filteredCandidates.length}</span></h5>
 
                     <div className='d-flex' id='tops'>
-                        <div  className="floating-field">
-                            <button className="btn btn-primary form-control">.CSV Upload</button>    
+                        <div className="floating-field">
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => {
+                                    setView("uploadcsv");
+                                    setShowModal(true);
+                                }}
+                            >
+                                <FaFileExcel
+                                    size={20}
+                                    color="white"
+                                    style={{ marginTop: "-8px", marginLeft: "-8px" }}
+                                />
+
+                                .CSV Upload</button>
                         </div>
 
                         {/* STATUS FILTER */}
@@ -277,7 +293,7 @@ export default function Candidates() {
                                                         setShowModal(true);
                                                     }}
                                                 >
-                                                    <FaEdit className='edit-icon'/>
+                                                    <FaEdit className='edit-icon' />
                                                 </button>
 
 
@@ -285,7 +301,7 @@ export default function Candidates() {
                                                     className="btn btn-sm  p-1"
                                                     onClick={() => handleDelete(candidate.candidate_id)}
                                                 >
-                                                    <FaTrash className='trash-icon'/>
+                                                    <FaTrash className='trash-icon' />
                                                 </button>
 
 
@@ -300,9 +316,9 @@ export default function Candidates() {
                                                 }}
                                                 onMouseEnter={() => setHoverCandidate(candidate)}
                                                 onMouseLeave={() => setHoverCandidate(null)}
-                                                
+
                                             >
-                                                <FaBell/>
+                                                <FaBell />
                                             </button>
                                         </div>
                                     </td>
@@ -510,6 +526,27 @@ export default function Candidates() {
                                 </div>
 
                                 <AddComp />
+                            </div>
+                        </div>
+
+                    </div>
+                )}
+                {view === "uploadcsv" && showModal && (
+                    <div className="modal fade show"
+                        style={{ display: "block", background: "rgba(0,0,0,0.5)" }}>
+
+                        <div className="modal-dialog" style={{ maxWidth: "auto", width: "auto" }}>
+                            <div className="model-content-sec" style={{ position: "relative" }}>
+
+                                <div className="d-flex justify-content-between align-items-center"
+                                    style={{ padding: "10px 20px" }}>
+
+                                    <h4 className="m-0">Add New Company</h4>
+
+                                    <button className="btn-close" onClick={() => setShowModal(false)}></button>
+                                </div>
+
+                                <UploadCSV />
                             </div>
                         </div>
 

@@ -305,13 +305,13 @@ export default function addCandidate() {
 
         {/* BUTTON */}
         <button type="submit" className="btn btn-success w-100 mt-2">
-          Add Candidates
+          Add Candidate
         </button>
       </form>
       {/* -------------------------------------
            📁 Excel Upload Section (No Logic Yet)
       -------------------------------------- */}
-      <div className="or_sec">
+      {/* <div className="or_sec">
         <span>OR</span>
       </div>
 
@@ -324,11 +324,11 @@ export default function addCandidate() {
             className="form-control"
             onChange={handleCSVUpload}
           />
-        </div>
+        </div> */}
 
 
         {/* STATUS */}
-        {csvmessage && (
+        {/* {csvmessage && (
           <div className="alert alert-info text-center py-2">{csvmessage}</div>
         )}
         <button
@@ -343,7 +343,7 @@ export default function addCandidate() {
         </button>
 
 
-      </div>
+      </div> */}
 
     </div>
   );
