@@ -68,6 +68,7 @@
   overflow-x: hidden;
   overflow-y: hidden;
   margin-left: 200px;
+  position:fixed;
 }
 
 th {
