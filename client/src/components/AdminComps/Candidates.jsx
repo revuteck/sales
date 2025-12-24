@@ -137,7 +137,7 @@ export default function Candidates() {
 
                     <div className='d-flex' id='tops'>
                         <div  className="floating-field">
-                            <button className="btn btn-primary">.CSV Upload</button>    
+                            <button className="btn btn-primary form-control">.CSV Upload</button>    
                         </div>
 
                         {/* STATUS FILTER */}
