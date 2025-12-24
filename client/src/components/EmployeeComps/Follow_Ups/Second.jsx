@@ -129,7 +129,7 @@ export default function Second() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th>ID</th>
+              <th style={{width:"10px"}}>ID</th>
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
