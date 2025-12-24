@@ -136,8 +136,8 @@ export default function Candidates() {
                     <h5>Companies :<span className="count-badge"> {filteredCandidates.length}</span></h5>
 
                     <div className='d-flex' id='tops'>
-                        <div>
-                            <button>.CSV Upload</button>    
+                        <div  className="floating-field">
+                            <button className="btn btn-primary">.CSV Upload</button>    
                         </div>
 
                         {/* STATUS FILTER */}
