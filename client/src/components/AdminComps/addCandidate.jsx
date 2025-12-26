@@ -128,10 +128,12 @@ export default function AddCandidate() {
             required
           >
             <option value="">Select Country</option>
-            <option value="1">Saudi Arabia</option>
-            <option value="2">Singapore</option>
-            <option value="3">Qatar</option>
+           <option value="1">CANADA</option>
+            <option value="2">USA</option>
+            <option value="3">SINGAPORE</option>
             <option value="4">UAE</option>
+            <option value="5">QATAR</option>
+            <option value="6">SAUDI ARABIA</option>
           </select>
         </div>
 
