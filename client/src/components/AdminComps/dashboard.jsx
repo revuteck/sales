@@ -268,7 +268,8 @@ export default function Dashboard() {
             {employeeStats.map((emp, index) => (
               <div key={index} className="col-md-4">
                 <div className="shadow p-3">
-                  <h6 className="fw-bold">{emp.emp_name}-<span>{emp.designation} </span></h6>
+                  <h6 className="fw-bold">{emp.emp_name}
+                    -<span style={{fontSize: "10px"}}>{emp.emp_designation}</span></h6>
                   <tr>
                     <td><div>🏢 Registered Companies </div></td>
                     <td><b> : {emp.totalCompanies}</b></td>
