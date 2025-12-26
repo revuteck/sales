@@ -240,7 +240,7 @@ tbody td {
 }
 
 .td-wrap {
-  max-width: 150px;
+  max-width: 100px;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
