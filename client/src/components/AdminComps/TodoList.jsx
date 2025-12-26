@@ -194,21 +194,21 @@ export default function TodoList() {
             {list.length > 0 ? (
               list.map((c) => (
                 <tr key={c.candidate_id}>
-                  <td>{c.candidate_id}</td>
-                  <td>{c.comp_domain}</td>
-                  <td>{c.comp_name}</td>
-                  <td>
+                  <td className="td-wrap">{c.candidate_id}</td>
+                  <td className="td-wrap">{c.comp_domain}</td>
+                  <td className="td-wrap">{c.comp_name}</td>
+                  <td className="td-wrap">
                     <a href={c.website} target="_blank" rel="noreferrer">
                       {c.website}
                     </a>
                   </td>
-                  <td>{c.email}</td>
-                  <td>{c.phone}</td>
-                  <td>{c.emp_name}</td>
-                  <td>{c.country_name}</td>
-                  <td>{formatDate(c[dateField])}</td>
-                  <td>{c[statusField]}</td>
-                  <td>
+                  <td className="td-wrap">{c.email}</td>
+                  <td className="td-wrap">{c.phone}</td>
+                  <td className="td-wrap">{c.emp_name}</td>
+                  <td className="td-wrap">{c.country_name}</td>
+                  <td className="td-wrap">{formatDate(c[dateField])}</td>
+                  <td className="td-wrap">{c[statusField]}</td>
+                  <td className="td-wrap">
                     <input
                       type="checkbox"
                       checked={selectedRows.includes(c.candidate_id)}
