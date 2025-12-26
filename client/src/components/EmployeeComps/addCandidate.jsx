@@ -219,12 +219,12 @@ export default function addCandidate() {
             required
           >
             <option value="">Select Country</option>
-            <option value="1">KANADA</option>
+            <option value="1">CANADA</option>
             <option value="2">USA</option>
             <option value="3">SINGAPORE</option>
             <option value="4">UAE</option>
             <option value="5">QATAR</option>
-            <option value="6">SAUDI AREBIA</option>
+            <option value="6">SAUDI ARABIA</option>
           </select>
         </div>
 
@@ -307,7 +307,7 @@ export default function addCandidate() {
 
         {/* BUTTON */}
         <button type="submit" className="btn btn-success w-100 mt-2">
-          Add Candidate
+          Add Company
         </button>
       </form>
       {/* -------------------------------------
