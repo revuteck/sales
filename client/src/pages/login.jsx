@@ -63,7 +63,7 @@ export default function Login() {
   return (
     <div className="login-comp d-flex justify-content-center align-items-center min-vh-100 w-100">
       <form className="shadow p-4 rounded bg-white" style={{ width: "350px" }} onSubmit={handleLogin}>
-        <h3 className="text-center mb-4">Login</h3>
+        <h3 className="text-center mb-4">Login!</h3>
 
         {/* designation dropdown */}
         {/* <div className="mb-3">

@@ -19,8 +19,6 @@ export default function Candidates() {
     const [showModal, setShowModal] = React.useState(false);
     const [hoverCandidate, setHoverCandidate] = useState(null);
     const [editCandidate, setEditCandidate] = React.useState(null);
-
-
     const [filterStatus, setFilterStatus] = React.useState("all");
     const [searchEmp, setSearchEmp] = useState("all");
     const [searchCountry, setCountry] = useState("all")
@@ -75,7 +73,7 @@ export default function Candidates() {
             c.emp_name?.toLowerCase().includes(searchEmp.toLowerCase());
         const countryMatch =
             searchCountry === "all" ||
-            c.country_name?.includes(searchCountry)
+            c.country_name?.toLowerCase().includes(searchCountry.toLowerCase())
         // if (filterStatus === "all") return true;
         // return c.final_status === filterStatus;
         return empMatch && statusMatch && countryMatch;
@@ -158,6 +156,7 @@ export default function Candidates() {
 
                         {/* STATUS FILTER */}
                         <div className="floating-field">
+                            
                             <label className="floating-label">Country</label>
 
                             <select
@@ -201,6 +200,7 @@ export default function Candidates() {
                                 <option value="all">All</option>
                                 <option value="PENDING">Pending</option>
                                 <option value="COMPLETED">Completed</option>
+                                <option value="FAILED">Failed</option>
                             </select>
                         </div>
 
@@ -221,7 +221,7 @@ export default function Candidates() {
 
                 {/* TABLE */}
                 <div className="table-wrapper mt-4"
-                    style={{ maxHeight: "580px", overflowY: "auto", overflowX: "hidden" }}>
+                    style={{ maxHeight: "570px", overflowY: "auto", overflowX: "hidden" }}>
 
                     <table className="table table-bordered table-hover table-follow-ups">
                         <thead className="table-dark" style={{ position: "sticky", top: 0, zIndex: 10 }}>

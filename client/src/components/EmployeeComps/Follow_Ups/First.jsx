@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function First() {
   const [candidates, setCandidates] = useState([]);
@@ -77,23 +78,50 @@ export default function First() {
 
   /* ================= UPDATE STATUS ================= */
   const handleSave = async () => {
-    if (selectedRows.length === 0) {
+     if (selectedRows.length === 0) {
       return alert("⚠ Select at least one candidate!");
     }
-
+    const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "The records move to DONE.",
+    // icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+  })
+    if (result.isConfirmed) {
+      // Put your undo code here
     try {
       await axios.put("https://rev-comp-backend.onrender.com/api/candidates/update-status", {
         ids: selectedRows,
         stage: "first",
       });
 
-      alert("✔ Updated Successfully");
+     Swal.fire({
+        // title: "✔ Done!",
+        // text: "Updated Successfully",
+        icon: "success",
+        timer: 500,            // closes after 5 sec
+        showConfirmButton: false
+      });
+
 
       setSelectedRows([]);
       fetchCandidates();
     } catch (error) {
       console.log(error);
-      alert("❌ Update Failed");
+       Swal.fire({
+        icon: "failed",
+        timer:1500,
+        showCancelButton: false
+
+       });
+    }
+    } else {
+      // User pressed Cancel
+      console.log("Cancelled");
     }
   };
 

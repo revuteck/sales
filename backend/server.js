@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 5000;
 
 // ---- ENABLE CORS BEFORE ROUTES ----
 app.use(cors({
-    origin: "https://sales.revuteck.in",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));

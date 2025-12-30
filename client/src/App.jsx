@@ -12,11 +12,19 @@ import AllCandidates from './components/AdminComps/Candidates'
 import Employee from './components/SuperAdminComps/getEmp';
 import AllPendings from './components/SuperAdminComps/pendings';
 import AllTodoList from './components/AdminComps/TodoList';
+import FailedEmp from './components/EmployeeComps/Failed'
 import AdminCandidates from './components/AdminComps/Candidates'
 import Emp_Dash from './components/EmployeeComps/dashboard'
 import Candidates from './components/EmployeeComps/Candidates'
+import SentMails from './components/EmployeeComps/Follow_Ups/SentMails'
+import TodaySent from './components/EmployeeComps/todaySent'
 import Pendings from './components/EmployeeComps/pendings'
 import Todo from './components/EmployeeComps/TodoList'
+import Countries from './components/AdminComps/Countries'
+import AllFailed from './components/AdminComps/Failed'
+// import TodayAllSent from './components/AdminComps/todayAllSent'
+// import AllTodaySent from './components/AdminComps/AllTodaySent'
+import AllSentMails from './components/AdminComps/SentMails'
 function App() {
   return (
     <>
@@ -34,6 +42,9 @@ function App() {
         <Route path = "candidates" element={<Candidates/>} />
         <Route path = "pendings" element={<Pendings/>} />
         <Route path = "todo" element={<Todo/>} />
+        <Route path = "failed" element={<FailedEmp/>} />
+        <Route path = "sentmails" element={<SentMails/>} />
+        <Route path = "todaysentmails" element={<TodaySent/>} />
         </Route>
         {/* ADMIN ROUTINGS */}
         <Route path = "/admin" element={<AdminDashboard />}>
@@ -43,6 +54,12 @@ function App() {
         <Route path='emps' element={<Employee />} />
         <Route path='all-pendings' element={<AllPendings/>} />
         <Route path='all-todo' element={<AllTodoList/>} />
+        <Route path='countries' element={<Countries/>} />
+        <Route path='all-failed' element={<AllFailed/>} />
+        {/* <Route path='all-today-sent' element={<TodayAllSent/>} /> */}
+        <Route path='all-sent-mails' element={<AllSentMails/>} />
+        {/* <Route path='all-mails-today-sent' element={<AllTodaySent/>} /> */}
+
 
         </Route>
 

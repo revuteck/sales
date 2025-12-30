@@ -4,7 +4,7 @@ import axios from "axios";
 export default function AddCandidate() {
 
   const [employees, setEmployees] = useState([]);
-
+  const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
     domain: "",
     name: "",
@@ -26,7 +26,6 @@ export default function AddCandidate() {
     countryId: "",
     countryName: ""
   });
-
   const [message, setMessage] = useState("");
 
   // -------------------------
@@ -93,6 +92,22 @@ export default function AddCandidate() {
     }
   };
 
+  //--------------
+  // GET COUNTRY
+  //--------------
+  const fetchCountries = async ()=>{
+    axios.get('http://localhost:5000/api/country/data')
+    .then(res =>{
+      setCountries(res.data);
+    })
+    .catch(err =>{
+      console.error("Error while getting countries:", err)
+    })
+  }
+  useEffect(()=>{
+    fetchCountries();
+  }, [])
+
   return (
     <div className="container mt-4">
 
@@ -128,12 +143,20 @@ export default function AddCandidate() {
             required
           >
             <option value="">Select Country</option>
-           <option value="1">CANADA</option>
-            <option value="2">USA</option>
-            <option value="3">SINGAPORE</option>
-            <option value="4">UAE</option>
-            <option value="5">QATAR</option>
-            <option value="6">SAUDI ARABIA</option>
+            {countries.map(c =>{
+                return (
+                         c.status=== "ACTIVE"?
+                          <option key={c.country_id} value={c.country_id}>
+                            {c.country_name}
+                        </option>:
+                        <option key={c.country_id} value={c.country_id} disabled>
+                            {c.country_name}
+                        </option>
+                        
+                    );
+            })}
+            
+            
           </select>
         </div>
 

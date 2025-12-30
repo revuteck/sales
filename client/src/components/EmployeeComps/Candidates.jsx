@@ -8,6 +8,7 @@ import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
 import { FaFileExcel } from "react-icons/fa";
+import { addFiveDays, addFourDays, addThreeDays, addTwoDays } from '../../utilities/ActualDates';
 
 
 export default function Candidates() {
@@ -166,6 +167,7 @@ export default function Candidates() {
                                 <option value="all">All</option>
                                 <option value="PENDING">Pending</option>
                                 <option value="COMPLETED">Completed</option>
+                                <option value="FAILED">Failed</option>
                             </select>
                         </div>
 
@@ -185,7 +187,7 @@ export default function Candidates() {
                 </div>
 
                 <div className="table-wrapper mt-4"
-                    style={{ maxHeight: "580px", overflowY: "auto", overflowX: "hidden" }}>
+                    style={{ maxHeight: "570px", overflowY: "auto", overflowX: "hidden" }}>
                     <table className="table table-bordered table-hover table-follow-ups">
                         <thead className="table-dark">
                             <tr>
@@ -196,8 +198,8 @@ export default function Candidates() {
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Registered Date</th>
-                                <th>Emp Name</th>
-                                <th>Country Name</th>
+                                <th>Emp</th>
+                                <th>Country</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -251,7 +253,7 @@ export default function Candidates() {
                                                         setEditCandidate({ ...candidate });
                                                         setView("edit");
                                                         setShowModal(true);
-                                                    }}
+                                                    }}          
                                                 >
                                                     <FaEdit className='edit-icon' />
                                                 </button>
@@ -292,6 +294,7 @@ export default function Candidates() {
                     <div className="followup-hover-card">
                         <div><strong>{hoverCandidate.email}</strong></div>
                         <hr />
+                        
                         <div><strong>1st:</strong> {formatDate(hoverCandidate.first_f_date)} — {hoverCandidate.first_f_status}</div>
                         <div><strong>2nd:</strong> {formatDate(hoverCandidate.second_f_date)} — {hoverCandidate.second_f_status}</div>
                         <div><strong>3rd:</strong> {formatDate(hoverCandidate.third_f_date)} — {hoverCandidate.third_f_status}</div>
@@ -322,61 +325,43 @@ export default function Candidates() {
                                     <table className="table table-bordered" style={{ minWidth: "auto" }}>
                                         <tbody>
                                             <tr>
+                                                <th>Stage</th>
+                                                <th>Sent</th>
+                                                <th>Actual</th>
+                                                <th>Status</th>
+                                            </tr>
+                                            <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.first_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{addTwoDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.first_f_status}</td>
-                                            </tr>
-                                            {/* <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up Status</th>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.first_f_status}</td>
-                                            </tr> */}
-
+                                            </tr>                                    
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up</th>
 
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}> {formatDate(selectedCandidate.second_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}> {addThreeDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
 
                                             </tr>
-                                            {/* <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up Status</th>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
-                                            </tr> */}
-
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Third Follow-up</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.third_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{addFourDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.third_f_status}</td>
 
                                             </tr>
-                                            {/* <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Third Follow-up Status</th>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.third_f_status}</td>
-                                            </tr> */}
-
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Fourth Follow-up</th>
-                                                <td>{formatDate(selectedCandidate.fourth_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.fourth_f_date)}</td>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{addFiveDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.fourth_f_status}</td>
 
                                             </tr>
-                                            {/* <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Fourth Follow-up Status</th>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.fourth_f_status}</td>
-                                            </tr> */}
-
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Final Status</th>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.final_status}</td>
                                             </tr>
-                                            {/* <tr>
-                                                <th style={{ width: "250px", whiteSpace: "nowrap" }}>Assigned Employee</th>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.emp_name}</td>
-                                            </tr> */}
-                                            {/* <tr>
-                                                    <th style={{ width: "250px", whiteSpace: "nowrap" }}>Country</th>
-                                                    <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.country_name}</td>
-                                                </tr> */}
                                         </tbody>
                                     </table>
 

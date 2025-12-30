@@ -109,13 +109,28 @@ export default function TodoList() {
   /* -------------------- GROUPED DATA -------------------- */
 
   const grouped = Object.fromEntries(
-    stages.map((s) => [
+  stages.map((s, index) => {
+    const prevStage = stages[index - 1];
+
+    return [
       s.key,
-      filteredList.filter(
-        (c) => isToday(c[s.date]) && c[s.status] === "PENDING"
-      ),
-    ])
-  );
+      filteredList.filter((c) => {
+        // Current Stage Condition
+        const dateToday = isToday(c[s.date]);
+        const statusPending = c[s.status] === "PENDING";
+
+        // First follow-up should NOT check previous stage
+        if (!prevStage) return dateToday && statusPending;
+
+        // Previous Stage DONE condition
+        const prevStatusDone = c[prevStage.status] === "DONE";
+
+        return dateToday && statusPending && prevStatusDone;
+      }),
+    ];
+  })
+);
+
 
   /* -------------------- TABLE RENDER -------------------- */
 

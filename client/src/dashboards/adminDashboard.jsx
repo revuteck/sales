@@ -63,71 +63,35 @@ export default function SuperAdminDashboard() {
           <NavLink
             className={activeLink === "todolist" ? "active" : ""}
             to="all-candidates">Companies</NavLink>
-          <NavLink
-            className={activeLink === "todolist" ? "active" : ""}
-            to="emps">Employees</NavLink>
 
           <NavLink
             className={activeLink === "todolist" ? "active" : ""}
             to="all-todo"
           >TODO Lists</NavLink>
+          {/* <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="all-mails-today-sent"
+          >Today Sent Mails</NavLink> */}
+       
+
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="all-sent-mails"
+          >All Sent Mails</NavLink>
           <NavLink
             className={activeLink === "todolist" ? "active" : ""}
             to="all-pendings"
           >Pendings</NavLink>
-
-          {/* <a 
-            href="#" 
-            className={activeLink === "dashboard" ? "active" : ""}
-            onClick={() => handleNavClick("dashboard")}
-          >
-            Dashboard
-          </a> */}
-
-          {/* <a 
-            href="#" 
-            className={activeLink === "candidates" ? "active" : ""}
-            onClick={() => handleNavClick("candidates")}
-          >
-            Companies
-          </a> */}
-
-          {/* <a 
-            href="#" 
-            className={activeLink === "employees" ? "active" : ""}
-            onClick={() => handleNavClick("employees")}
-          >
-            Employees
-          </a> */}
-
-          {/* <a 
-            href="#" 
-            className={activeLink === "addemp" ? "active" : ""}
-            onClick={() => handleNavClick("addemp")}
-          >
-            Add New Employee
-          </a> */}
-
-          {/* <a 
-            href="#" 
-            className={activeLink === "addcandidate" ? "active" : ""}
-            onClick={() => handleNavClick("addcandidate")}
-          >
-            Add New Company
-          </a> */}
-          {/* <a href="#" 
+          <NavLink
             className={activeLink === "todolist" ? "active" : ""}
-            onClick={() => handleNavClick("todolist")}>
-            TODO Lists
-          </a>
-          <a 
-            href="#" 
-            className={activeLink === "pendings" ? "active" : ""}
-            onClick={() => handleNavClick("pendings")}
-          >
-            Pendings
-          </a> */}
-
+            to="all-failed"
+          >All Failed</NavLink>
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="emps">Employees</NavLink>
+            <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="countries">Countries</NavLink>
           <button className="logout" onClick={logoutHandle}>
             Logout
           </button>
@@ -136,14 +100,13 @@ export default function SuperAdminDashboard() {
 
       {/* RIGHT SIDE CONTENT */}
       <div className='s-admin-dashboard-right'>
-        {/* {view === "dashboard" && <Dashboard/>} */}
-        {/* {view === "candidates" && <Candidates />} */}
-        <Outlet />
-        {/* {view === "addemp" && <AddEmp />} */}
-        {/* {view === "employees" && <GetEmp />} */}
-        {/* {view === "addcandidate" && <AddCandidate/>}
-        {view === "pendings" && <Pendings />}
-        {view === "todolist" && <TodoList/>} */}
+         <div className="content-area">
+          <Outlet />
+        </div>
+
+        <footer className="app-footer">
+          © All rights reserved to revuteck.in
+        </footer>
       </div>
     </div>
   );

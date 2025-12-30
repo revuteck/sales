@@ -90,13 +90,30 @@ export default function TodoList() {
 
   /* ---------------- GROUPED USING FILTERED CANDIDATES ---------------- */
   const grouped = Object.fromEntries(
-    stages.map((s) => [
+  stages.map((s, index) => {
+    const prevStage = index > 0 ? stages[index - 1] : null; // ✅ get previous stage
+
+    return [
       s.key,
-      filteredCandidates.filter(
-        (c) => isToday(c[s.date]) && c[s.status] === "PENDING"
-      ),
-    ])
-  );
+      filteredCandidates.filter((c) => {
+        // Current Stage Condition
+        const dateToday = isToday(c[s.date]);
+        const statusPending = c[s.status] === "PENDING";
+
+        // First follow-up → no previous stage
+        if (!prevStage) {
+          return dateToday && statusPending;
+        }
+
+        // Previous Stage DONE
+        const prevStatusDone = c[prevStage.status] === "DONE";
+
+        return dateToday && statusPending && prevStatusDone;
+      }),
+    ];
+  })
+);
+
 
   const renderTable = (label, list, stageKey, statusField, dateField) => (
     <div className="section-block">
@@ -148,7 +165,7 @@ export default function TodoList() {
               <th>Country Name</th>
               <th>Follow Up</th>
               <th>Status</th>
-              <th>Update</th>
+              <th style={{width:"5px"}}>Update</th>
             </tr>
           </thead>
 

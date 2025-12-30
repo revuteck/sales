@@ -12,4 +12,3 @@ const countryData = (req, res)=> {
     })
 }
 module.exports = {countryData};
-
