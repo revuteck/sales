@@ -549,3 +549,120 @@ tr {
   cursor: pointer;
 }
 
+/* =================================================== */
+             /* CALENDER CSS */
+/* =================================================== */
+/* Modal */
+.calendar-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Box */
+.calendar-box {
+  background: white;
+  padding: 30px 10px 10px 10px;
+  border-radius: 5px;
+  position: relative;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  right: 5px;
+  top: 1px;
+  border: none;
+  background: transparent !important;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 0px !important;
+ 
+}
+
+/* Open button */
+.open-calendar-btn {
+  padding: 0px 0px;
+  background: transparent;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  position: absolute;
+  font-size: 22px;
+  left: 0px;
+  top: 1px;
+
+  /* 🔥 Smooth animation */
+  transition: 
+    background-color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.open-calendar-btn:hover {
+  /* background: rgb(134, 131, 131); */
+  transform: scale(1.08);           /* slight zoom */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.open-calendar-btn:active {
+  transform: scale(0.95);           /* press effect */
+}
+
+.date-pick{
+   margin-top: 10px !important;
+}
+
+/* RED DATE */
+.red-date {
+  background-color: #ff4d4d !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+/* GREEN DATE */
+.green-date {
+  background-color: #28a745 !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+.pad_30px{
+  padding-left: 30px;
+  font-size: 15px;
+}
+
+.date-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.clear-btn-input {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%) scale(1);
+  cursor: pointer;
+  font-size: 12px;
+  color: red !important;
+
+  /* 🔥 Smooth transition */
+  transition: 
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.clear-btn-input:hover {
+  transform: translateY(-50%) scale(1.4); /* zoom instead of font-size */
+  opacity: 0.9;
+}
+
+
+

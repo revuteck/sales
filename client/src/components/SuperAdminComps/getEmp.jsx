@@ -22,7 +22,7 @@ console.log(editData)
     }, []);
 
     const fetchEmployees = () => {
-        axios.get("https://rev-comp-backend.onrender.com/api/employee/data")
+        axios.get("http://localhost:5000/api/employee/data")
             .then(res => setEmployees(res.data))
             .catch(err => console.error(err));
     };
@@ -35,7 +35,7 @@ console.log(editData)
             const token = localStorage.getItem("token");
 
             await axios.delete(
-                `https://rev-comp-backend.onrender.com/api/employee/delete/${id}`,
+                `http://localhost:5000/api/employee/delete/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -62,7 +62,7 @@ console.log(editData)
             const token = localStorage.getItem("token");
 
             await axios.put(
-                `https://rev-comp-backend.onrender.com/api/employee/update/${editRowId}`,
+                `http://localhost:5000/api/employee/update/${editRowId}`,
                 editData,
                 {
                     headers: { Authorization: `Bearer ${token}` }
@@ -108,7 +108,7 @@ console.log(editData)
                     <table className='table table-bordered table-hover'>
                         <thead className='table-dark'>
                             <tr>
-                                <th style={{width: "10px"}}>Emp Id</th>
+                                <th style={{width: "10px"}}>E Id</th>
                                 <th>Emp Name</th>
                                 <th>Designation</th>
                                 <th>Login Role</th>

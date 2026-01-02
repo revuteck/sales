@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import CalendarFilter from "../../../utilities/CalendarFilter";
 
 export default function SentMails() {
   const [candidates, setCandidates] = useState([]);
   const [activeStage, setActiveStage] = useState("first");
+  const [selectedDate, setSelectedDate] = useState(null); // FIXED
 
   const empId = localStorage.getItem("id");
+
   useEffect(() => {
     axios
-      .get(`https://rev-comp-backend.onrender.com/api/candidates/emp?empId=${empId}`)
+      .get(`http://localhost:5000/api/candidates/emp?empId=${empId}`)
       .then((res) => setCandidates(res.data.empId))
       .catch((err) => console.log(err));
   }, [empId]);
 
-  /* ------------ SAME STAGE CONFIG AS YOUR TODO LIST ------------ */
+  /* ------------ STAGE CONFIG ------------ */
   const stages = [
     { key: "first", status: "first_f_status", date: "first_f_date", label: "First Follow Up" },
     { key: "second", status: "second_f_status", date: "second_f_date", label: "Second Follow Up" },
@@ -21,14 +24,7 @@ export default function SentMails() {
     { key: "fourth", status: "fourth_f_status", date: "fourth_f_date", label: "Fourth Follow Up" },
   ];
 
-  /* ------------ FILTER COMPLETED BY FOLLOW-UP STAGE ------------ */
-  const groupedCompleted = Object.fromEntries(
-    stages.map((s) => [
-      s.key,
-      candidates.filter((c) => c[s.status] === "DONE")
-    ])
-  );
-
+  /* ------------ DATE FORMAT ------------ */
   const formatDate = (dateString) => {
     if (!dateString) return "—";
     const d = new Date(dateString);
@@ -37,28 +33,65 @@ export default function SentMails() {
     ).padStart(2, "0")}-${d.getFullYear()}`;
   };
 
-  /* ------------ TABLE RENDERER (COPIED FROM TODO LIST STYLE) ------------ */
+  /* ------------ APPLY DATE FILTER ------------ */
+  const filterByDate = (list, dateField) => {
+    if (!selectedDate) return list; // no filter applied
+
+    return list.filter(
+      (c) => selectedDate === formatDate(c[dateField])
+    );
+  };
+
+  /* ------------ GROUP COMPLETED ------------ */
+  const groupedCompleted = Object.fromEntries(
+    stages.map((s) => {
+      const completedList = candidates.filter((c) => c[s.status] === "DONE");
+      const dateFilteredList = filterByDate(completedList, s.date);
+      return [s.key, dateFilteredList];
+    })
+  );
+
+  /* ------------ RENDER TABLE ------------ */
   const renderTable = (label, list, stageKey, statusField, dateField) => (
     <div className="section-block">
       <div className="d-flex justify-content-between align-items-center">
         <h5 className="m-0">
           {label} : <span className="count-badge">{list.length}</span>
         </h5>
+
+        {/* DATE FILTER UI */}
+        <div className="floating-field d-flex date-input-wrapper" style={{ width: "125px" }}>
+          <CalendarFilter
+            onSelectDate={(date) => setSelectedDate(date)}
+          />
+          <input
+            type="text"
+            value={selectedDate || ""}
+            className="form-control pad_30px"
+            disabled
+            readOnly
+          />
+          {selectedDate && (
+            <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+              ✖
+            </span>
+          )}
+        </div>
       </div>
 
-      <div className="table-wrapper mt-3 table-wrap">
+      <div className="table-wrapper mt-2 table-wrap">
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th style={{width:"10px"}}>ID</th>
+              <th style={{ width: "10px" }}>ID</th>
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
               <th>Email</th>
               <th>Phone</th>
-              <th style={{width:"10px"}}>Country</th>
-              <th style={{width:"20px"}}>Completed</th>
-              <th style={{width:"10px"}}>Status</th>
+              <th>Country</th>
+              <th>Completed</th>
+              <th>Status</th>
             </tr>
           </thead>
 
@@ -96,15 +129,13 @@ export default function SentMails() {
 
   return (
     <div className="container">
-      {/* -------- STAGE BUTTONS (SAME AS TODO LIST) -------- */}
-      <div className="d-flex gap-2 justify-content-center flex-wrap ">
+      {/* Stage buttons */}
+      <div className="d-flex gap-2 justify-content-center flex-wrap">
         {stages.map((s) => (
           <button
             key={s.key}
             onClick={() => setActiveStage(s.key)}
-            className={`btn m-1 ${
-              activeStage === s.key ? "btn-dark active-btn" : "btn-outline-dark"
-            }`}
+            className={`btn m-1 ${activeStage === s.key ? "btn-dark active-btn" : "btn-outline-dark"}`}
             style={{ minWidth: "140px" }}
           >
             {s.label}
@@ -112,7 +143,7 @@ export default function SentMails() {
         ))}
       </div>
 
-      {/* -------- RENDER SELECTED STAGE -------- */}
+      {/* Render selected stage */}
       {stages
         .filter((s) => s.key === activeStage)
         .map((s) =>

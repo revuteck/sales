@@ -15,7 +15,7 @@ export default function Pendings() {
         <div className="follow-buttons d-flex gap-3 flex-wrap justify-content-center">
           <button
             onClick={() => setActiveView("first")}
-            className={`btn m-1 ${
+            className={`btn ${
               activeView === "first"
                 ? "btn-dark active-btn"
                 : "btn-outline-dark"
@@ -26,7 +26,7 @@ export default function Pendings() {
 
           <button
             onClick={() => setActiveView("second")}
-            className={`btn m-1 ${
+            className={`btn ${
               activeView === "second"
                 ? "btn-dark active-btn"
                 : "btn-outline-dark"
@@ -37,7 +37,7 @@ export default function Pendings() {
 
           <button
             onClick={() => setActiveView("third")}
-            className={`btn m-1 ${
+            className={`btn ${
               activeView === "third"
                 ? "btn-dark active-btn"
                 : "btn-outline-dark"
@@ -48,7 +48,7 @@ export default function Pendings() {
 
           <button
             onClick={() => setActiveView("fourth")}
-            className={`btn m-1 ${
+            className={`btn  ${
               activeView === "fourth"
                 ? "btn-dark active-btn"
                 : "btn-outline-dark"
@@ -59,7 +59,7 @@ export default function Pendings() {
         </div>
 
         {/* ---- CONTENT ---- */}
-        <div className="w-100">
+        <div className="w-100 m-1">
           {activeView === "first" && <First />}
           {activeView === "second" && <Second />}
           {activeView === "third" && <Third />}

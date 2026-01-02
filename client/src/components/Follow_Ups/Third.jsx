@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import CalendarFilter from "../../utilities/CalendarFilter";
 
 export default function Third() {
   const [candidates, setCandidate] = useState([]);
   const [searchEmp, setSearchEmp] = useState("all"); // ✅ emp filter
   const [countryFilter, setCountryFilter] = useState("all");
   const [countries, setCountries] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   // Fetch all candidates once
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/candidates")
+      .get("http://localhost:5000/api/candidates")
       .then((response) => {
         setCandidate(response.data);
       })
@@ -22,7 +24,7 @@ export default function Third() {
   /* -------------------- FETCH COUNTRIES -------------------- */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -56,21 +58,25 @@ export default function Third() {
 
   /* ---------------- FILTER LOGIC ---------------- */
 
-const pendingCandidates = candidates.filter((candidate) => {
-  const statusMatch =
-    isPastDate(candidate.third_f_date) &&
-    candidate.third_f_status === "PENDING";
+  const pendingCandidates = candidates.filter((candidate) => {
+    const dateMatch =
+      selectedDate === null ||
+      formatDate(candidate.third_f_date) === selectedDate &&
+      candidate.third_f_status === "PENDING"
+    const statusMatch =
+      isPastDate(candidate.third_f_date) &&
+      candidate.third_f_status === "PENDING";
 
-  const empMatch =
-    searchEmp === "all" ||
-    candidate.emp_name?.toLowerCase() === searchEmp.toLowerCase();
+    const empMatch =
+      searchEmp === "all" ||
+      candidate.emp_name?.toLowerCase() === searchEmp.toLowerCase();
 
-  const countryMatch =
-    countryFilter === "all" ||
-    candidate.country_name?.toLowerCase() === countryFilter.toLowerCase();
+    const countryMatch =
+      countryFilter === "all" ||
+      candidate.country_name?.toLowerCase() === countryFilter.toLowerCase();
 
-  return statusMatch && empMatch && countryMatch;
-});
+    return statusMatch && empMatch && countryMatch && dateMatch;
+  });
 
 
 
@@ -84,47 +90,69 @@ const pendingCandidates = candidates.filter((candidate) => {
           <span className="count-badge">{pendingCandidates.length}</span>
         </h5>
         <div className="d-flex">
+          {/* DATE FILTER */}
+          <div className="floating-field d-flex date-input-wrapper" style={{ width: "125px" }}>
+            <CalendarFilter
+              onSelectDate={(date) => {
+                setSelectedDate(date);
+              }}
+            />
+            <input
+              type="text"
+
+              value={selectedDate || ""}
+              className='form-control pad_30px'
+              disabled
+              readOnly />
+            {selectedDate && (
+              <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+                ✖
+              </span>
+            )}
+
+          </div>
           {/* CNTRY FILTER */}
-        <div className="floating-field">
-          <label className="floating-label">Country</label>
-          <select
-            className="form-control floating-select"
-            value={countryFilter}
-            onChange={(e) => setCountryFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            {countries.map((country) => (
-              <option key={country.country_name} value={country.country_name}>
-                {country.country_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* EMP FILTER */}
-        <div className="floating-field">
-          <label className="floating-label">Emp</label>
-          <select
-            className="form-control floating-select"
-            value={searchEmp}
-            onChange={(e) => setSearchEmp(e.target.value)}
-          >
-            <option value="all">All</option>
-            {employees.map((emp) => (
-              <option key={emp} value={emp}>
-                {emp}
-              </option>
-            ))}
-          </select>
+          <div className="floating-field">
+            <label className="floating-label">Country</label>
+            <select
+              className="form-control floating-select"
+              value={countryFilter}
+              onChange={(e) => setCountryFilter(e.target.value)}
+            >
+              <option value="all">All</option>
+              {countries.map((country) => (
+                country.status === "ACTIVE" &&
+                <option key={country.country_name} value={country.country_name}>
+                  {country.country_name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {/* EMP FILTER */}
+          <div className="floating-field">
+            <label className="floating-label">Emp</label>
+            <select
+              className="form-control floating-select"
+              value={searchEmp}
+              onChange={(e) => setSearchEmp(e.target.value)}
+            >
+              <option value="all">All</option>
+              {employees.map((emp) => (
+                <option key={emp} value={emp}>
+                  {emp}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
-        </div>
 
       {/* TABLE */}
       <div className="table-wrapper mt-3 table-wrap">
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th style={{width:"10px"}}>ID</th>
+              <th style={{ width: "10px" }}>ID</th>
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>

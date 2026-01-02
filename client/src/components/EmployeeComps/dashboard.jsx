@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import {isTomorrow} from '../../utilities/Dates'
 
 import Candidates from "./Candidates";
 
@@ -37,7 +38,15 @@ export default function Dashboard() {
     second_senttoday: 0,
     third_senttoday: 0,
     fourth_senttoday: 0,
+    
   });
+
+  const tomorrowCounts = {
+  first_tmr: 0,
+  second_tmr: 0,
+  third_tmr: 0,
+  fourth_tmr: 0,
+};
 
   useEffect(() => {
     getCounts();
@@ -98,13 +107,27 @@ export default function Dashboard() {
         return d.getTime() < t.getTime();
 
       }
-      const { data } = await axios.get("https://rev-comp-backend.onrender.com/api/candidates", {
+      const { data } = await axios.get("http://localhost:5000/api/candidates", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       // candidates assigned to login user
       const myCompanies = data.filter(c => c.assigned_emp_id === empId);
       setCandidates(myCompanies)
+        myCompanies.forEach(c => {
+    if (isTomorrow(c.first_f_date) && c.first_f_status === "PENDING") {
+      tomorrowCounts.first_tmr++;
+    }
+    if (isTomorrow(c.second_f_date) && c.second_f_status === "PENDING") {
+      tomorrowCounts.second_tmr++;
+    }
+    if (isTomorrow(c.third_f_date) && c.third_f_status === "PENDING") {
+      tomorrowCounts.third_tmr++;
+    }
+    if (isTomorrow(c.fourth_f_date) && c.fourth_f_status === "PENDING") {
+      tomorrowCounts.fourth_tmr++;
+    }
+  });
 
       // reusable function
       const filterTodo = (stageStatus, stageDate, prevStatus) =>
@@ -114,7 +137,7 @@ export default function Dashboard() {
             isToday(c[stageDate])
         );
       // grouped
-      const first = filterTodo("first_f_status", "first_f_date");
+      const first = filterTodo("first_f_status", "first_f_date", "initial_status");
       const second = filterTodo("second_f_status", "second_f_date", "first_f_status");
       const third = filterTodo("third_f_status", "third_f_date", "second_f_status");
       const fourth = filterTodo("fourth_f_status", "fourth_f_date", "third_f_status");
@@ -169,10 +192,15 @@ export default function Dashboard() {
         first_senttoday: myCompanies.filter(c => c.first_f_status === "DONE" && Today(c.first_done_dt)).length,
         second_senttoday: myCompanies.filter(c => c.second_f_status === "DONE" && Today(c.second_done_dt)).length,
         third_senttoday: myCompanies.filter(c => c.third_f_status && Today(c.third_done_dt)).length,
-        fourth_senttoday: myCompanies.filter(c => c.fourth_f_status && Today(c.fourth_done_dt)).length
+        fourth_senttoday: myCompanies.filter(c => c.fourth_f_status && Today(c.fourth_done_dt)).length,
+        first_tmr: tomorrowCounts.first_tmr,
+        second_tmr: tomorrowCounts.second_tmr,
+        third_tmr: tomorrowCounts.third_tmr,
+        fourth_tmr: tomorrowCounts.fourth_tmr
+
 
       });
-
+     
     } catch (err) {
       console.error(err);
     }
@@ -251,6 +279,17 @@ export default function Dashboard() {
                     </td>
                     <td>
                       <h2 className="value">={counts.first_senttoday + counts.second_senttoday + counts.third_senttoday + counts.fourth_senttoday}</h2>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th colSpan="8">
+                      <span className="label">Tomorrow's Mails</span>
+                    </th>
+                    <td>
+                      <span className="">: {counts.first_tmr}+{counts.second_tmr}+{counts.third_tmr}+{counts.fourth_tmr}</span>
+                    </td>
+                    <td>
+                      <h2 className="value">={counts.first_tmr + counts.second_tmr + counts.third_tmr + counts.fourth_tmr}</h2>
                     </td>
                   </tr>
 

@@ -39,7 +39,7 @@ export default function AddCandidate() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        "https://rev-comp-backend.onrender.com/api/employee/data",
+        "http://localhost:5000/api/employee/data",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEmployees(res.data);
@@ -76,7 +76,7 @@ export default function AddCandidate() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "https://rev-comp-backend.onrender.com/api/candidates/add",
+        "http://localhost:5000/api/candidates/add",
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -96,7 +96,7 @@ export default function AddCandidate() {
   // GET COUNTRY
   //--------------
   const fetchCountries = async ()=>{
-    axios.get('https://rev-comp-backend.onrender.com/api/country/data')
+    axios.get('http://localhost:5000/api/country/data')
     .then(res =>{
       setCountries(res.data);
     })
@@ -145,11 +145,8 @@ export default function AddCandidate() {
             <option value="">Select Country</option>
             {countries.map(c =>{
                 return (
-                         c.status=== "ACTIVE"?
+                         c.status=== "ACTIVE" &&
                           <option key={c.country_id} value={c.country_id}>
-                            {c.country_name}
-                        </option>:
-                        <option key={c.country_id} value={c.country_id} disabled>
                             {c.country_name}
                         </option>
                         

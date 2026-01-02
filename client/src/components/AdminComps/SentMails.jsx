@@ -1,18 +1,74 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import CalendarFilter from "../../utilities/CalendarFilter";
 
 export default function SentMails() {
   const [candidates, setCandidates] = useState([]);
-  const [activeStage, setActiveStage] = useState("first");
+  const [countries, setCountries] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
+  const [activeStage, setActiveStage] = useState("first");
+  const [filterCountry, setFilterCountry] = useState("all");
+  const [filterEmp, setFilterEmp] = useState("all");
+
+  /* ------------------ FORMAT DATE ------------------ */
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const d = new Date(dateString);
+
+    return `${String(d.getDate()).padStart(2, "0")}-${String(
+      d.getMonth() + 1
+    ).padStart(2, "0")}-${d.getFullYear()}`;
+  };
+
+  /* ------------------ APPLY FILTERS ------------------ */
+  const applyFilters = (records, statusField, dateField) => {
+    return records.filter((c) => {
+      const recordDateFormatted = c[dateField]
+        ? formatDate(c[dateField])
+        : null;
+
+      const dateMatch =
+        !selectedDate || recordDateFormatted === selectedDate;
+
+      const passCountry =
+        filterCountry === "all" ||
+        c.country_name.toLowerCase() === filterCountry.toLowerCase();
+
+      const passEmp =
+        filterEmp === "all" ||
+        c.emp_name.toLowerCase() === filterEmp.toLowerCase();
+
+      return dateMatch && passCountry && passEmp;
+    });
+  };
+
+  /* ------------------ FETCH CANDIDATES ------------------ */
   useEffect(() => {
     axios
-      .get(`https://rev-comp-backend.onrender.com/api/candidates`)
+      .get(`http://localhost:5000/api/candidates`)
       .then((res) => setCandidates(res.data))
       .catch((err) => console.log(err));
   }, []);
 
-  /* ------------ SAME STAGE CONFIG AS YOUR TODO LIST ------------ */
+  /* ------------------ FETCH COUNTRIES ------------------ */
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/country/data")
+      .then((res) => setCountries(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  /* ------------------ FETCH EMPLOYEES ------------------ */
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/employee/data")
+      .then((res) => setEmployees(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  /* ------------------ STAGE CONFIG ------------------ */
   const stages = [
     { key: "first", status: "first_f_status", date: "first_f_date", label: "First Follow Up" },
     { key: "second", status: "second_f_status", date: "second_f_date", label: "Second Follow Up" },
@@ -20,32 +76,90 @@ export default function SentMails() {
     { key: "fourth", status: "fourth_f_status", date: "fourth_f_date", label: "Fourth Follow Up" },
   ];
 
-  /* ------------ FILTER COMPLETED BY FOLLOW-UP STAGE ------------ */
+  /* ------------------ GROUP BY ------------------ */
   const groupedCompleted = Object.fromEntries(
     stages.map((s) => [
       s.key,
-      candidates.filter((c) => c[s.status] === "DONE")
+      applyFilters(
+        candidates.filter((c) => c[s.status] === "DONE"),
+        s.status,
+        s.date
+      ),
     ])
   );
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "—";
-    const d = new Date(dateString);
-    return `${String(d.getDate()).padStart(2, "0")}-${String(
-      d.getMonth() + 1
-    ).padStart(2, "0")}-${d.getFullYear()}`;
-  };
-
-  /* ------------ TABLE RENDERER (COPIED FROM TODO LIST STYLE) ------------ */
+  /* ------------------ TABLE RENDERER ------------------ */
   const renderTable = (label, list, stageKey, statusField, dateField) => (
     <div className="section-block">
+
+      {/* HEADER FILTERS */}
       <div className="d-flex justify-content-between align-items-center">
         <h5 className="m-0">
           {label} : <span className="count-badge">{list.length}</span>
         </h5>
+
+        <div className="d-flex gap-1 mb-1">
+
+          {/* DATE FILTER */}
+          <div className="floating-field d-flex date-input-wrapper" style={{ width: "125px" }}>
+            <CalendarFilter onSelectDate={(date) => setSelectedDate(date)} />
+
+            <input
+              type="text"
+              value={selectedDate || ""}
+              className="form-control pad_30px"
+              readOnly
+            />
+
+            {selectedDate && (
+              <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+                ✖
+              </span>
+            )}
+          </div>
+
+          {/* COUNTRY FILTER */}
+          <div className="floating-field">
+            <select
+              className="form-control"
+              style={{ maxWidth: "200px" }}
+              value={filterCountry}
+              onChange={(e) => setFilterCountry(e.target.value)}
+            >
+              <option value="all">All Countries</option>
+
+              {countries
+                .filter((c) => c.status === "ACTIVE")
+                .map((c) => (
+                  <option key={c.country_id} value={c.country_name}>
+                    {c.country_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          {/* EMPLOYEE FILTER */}
+          <div className="floating-field">
+            <select
+              className="form-control"
+              style={{ maxWidth: "200px" }}
+              value={filterEmp}
+              onChange={(e) => setFilterEmp(e.target.value)}
+            >
+              <option value="all">All Employees</option>
+
+              {employees.map((e) => (
+                <option key={e.emp_id} value={e.emp_name}>
+                  {e.emp_name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div className="table-wrapper mt-3 table-wrap">
+      {/* TABLE */}
+      <div className="table-wrapper mt-2 table-wrap">
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
@@ -56,9 +170,9 @@ export default function SentMails() {
               <th>Email</th>
               <th>Phone</th>
               <th>Emp</th>
-              <th style={{width:"10px"}}>Country</th>
-              <th style={{width:"20px"}}>Completed</th>
-              <th style={{width:"10px"}}>Status</th>
+              <th>Country</th>
+              <th>Completed</th>
+              <th>Status</th>
             </tr>
           </thead>
 
@@ -84,7 +198,7 @@ export default function SentMails() {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="text-center text-muted">
+                <td colSpan="10" className="text-center text-muted">
                   <strong>🎉 No Completed Records</strong>
                 </td>
               </tr>
@@ -92,19 +206,21 @@ export default function SentMails() {
           </tbody>
         </table>
       </div>
+
     </div>
   );
 
   return (
     <div className="container">
-      {/* -------- STAGE BUTTONS (SAME AS TODO LIST) -------- */}
-      <div className="d-flex gap-2 justify-content-center flex-wrap ">
+
+      {/* STAGE BUTTONS */}
+      <div className="d-flex gap-2 justify-content-center flex-wrap">
         {stages.map((s) => (
           <button
             key={s.key}
             onClick={() => setActiveStage(s.key)}
             className={`btn m-1 ${
-              activeStage === s.key ? "btn-dark active-btn" : "btn-outline-dark"
+              activeStage === s.key ? "btn-dark" : "btn-outline-dark"
             }`}
             style={{ minWidth: "140px" }}
           >
@@ -113,7 +229,7 @@ export default function SentMails() {
         ))}
       </div>
 
-      {/* -------- RENDER SELECTED STAGE -------- */}
+      {/* RENDER TABLE */}
       {stages
         .filter((s) => s.key === activeStage)
         .map((s) =>

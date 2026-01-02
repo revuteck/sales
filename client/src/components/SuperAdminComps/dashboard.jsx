@@ -23,15 +23,15 @@ export default function Dashboard() {
       
 
       // Example endpoints — replace with your own
-      const empRes = await axios.get("https://rev-comp-backend.onrender.com/api/employee/data", {
+      const empRes = await axios.get("http://localhost:5000/api/employee/data", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const candRes = await axios.get("https://rev-comp-backend.onrender.com/api/candidates", {
+      const candRes = await axios.get("http://localhost:5000/api/candidates", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // const pendingRes = await axios.get("https://rev-comp-backend.onrender.com/api/candidates/pendingCount", {
+      // const pendingRes = await axios.get("http://localhost:5000/api/candidates/pendingCount", {
       //   headers: { Authorization: `Bearer ${token}` },
       // });
 

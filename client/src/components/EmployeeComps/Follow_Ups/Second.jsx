@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import CalendarFilter from "../../../utilities/CalendarFilter";
 
 export default function Second() {
   const [candidates, setCandidates] = useState([]);
   const empId = Number(localStorage.getItem("id"));
   const [countryFilter, setCountryFilter] = useState("all");
-    const [countries, setCountries] = useState([]);
-   const [selectedRows, setSelectedRows] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
-  const fetchCandidates= async () => {
+  const fetchCandidates = async () => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/candidates")
+      .get("http://localhost:5000/api/candidates")
       .then((response) => setCandidates(response.data))
       .catch((error) =>
         console.log("There was an error fetching candidates: " + error)
       );
   }; // <-- FIX: Dependency array added
-  useEffect(()=>{
+  useEffect(() => {
     fetchCandidates()
   }, [])
 
-    /* ================= FETCH COUNTRIES ================= */
+  /* ================= FETCH COUNTRIES ================= */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -51,13 +53,7 @@ export default function Second() {
 
     return followUpDate < today;
   };
-  /* ================= APPLY COUNTRY FILTER HERE ================= */
-  const filteredByCountry = candidates.filter((candidate) => {
-    return (
-      countryFilter === "all" ||
-      candidate.country_name?.toLowerCase() === countryFilter.toLowerCase()
-    );
-  });
+
 
   // ---------- FILTER PENDING ----------
   const pendingCandidates = candidates.filter(
@@ -66,6 +62,22 @@ export default function Second() {
       isPastDate(candidate.second_f_date) &&
       candidate.assigned_emp_id === empId
   );
+
+  const filteredPending = candidates.filter(c => {
+    const isPending = c.second_f_status === "PENDING" &&
+      isPastDate(c.second_f_date) &&
+      c.assigned_emp_id === empId;
+
+    const matchCountry =
+      countryFilter === "all" ||
+      c.country_name?.toLowerCase() === countryFilter.toLowerCase();
+
+    const matchDate =
+      !selectedDate || selectedDate === formatDate(c.second_f_date);
+
+    return isPending && matchCountry && matchDate;
+  });
+
   /* ================= CHECKBOX HANDLER ================= */
   const handleCheckbox = (id) => {
     setSelectedRows((prev) =>
@@ -82,43 +94,43 @@ export default function Second() {
     }
 
     const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "The records move to DONE.",
-    // icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-  })
+      title: "Are you sure?",
+      text: "The records move to DONE.",
+      // icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    })
     if (result.isConfirmed) {
       // Put your undo code here
-    try {
-      await axios.put("https://rev-comp-backend.onrender.com/api/candidates/update-status", {
-        ids: selectedRows,
-        stage: "second",
-      });
+      try {
+        await axios.put("http://localhost:5000/api/candidates/update-status", {
+          ids: selectedRows,
+          stage: "second",
+        });
 
-     Swal.fire({
-        // title: "✔ Done!",
-        // text: "Updated Successfully",
-        icon: "success",
-        timer: 500,            // closes after 5 sec
-        showConfirmButton: false
-      });
+        Swal.fire({
+          // title: "✔ Done!",
+          // text: "Updated Successfully",
+          icon: "success",
+          timer: 500,            // closes after 5 sec
+          showConfirmButton: false
+        });
 
 
-      setSelectedRows([]);
-      fetchCandidates();
-    } catch (error) {
-      console.log(error);
-       Swal.fire({
-        icon: "failed",
-        timer:1500,
-        showCancelButton: false
+        setSelectedRows([]);
+        fetchCandidates();
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "failed",
+          timer: 1500,
+          showCancelButton: false
 
-       });
-    }
+        });
+      }
     } else {
       // User pressed Cancel
       console.log("Cancelled");
@@ -128,37 +140,59 @@ export default function Second() {
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center">
-      <h5 className="">Second Follow Up Pending : <span className="count-badge">{pendingCandidates.length}</span></h5>
-      {/* ******** COUNTRY FILTER ADDED HERE ******** */}
+        <h5 className="">Second Follow Up Pending : <span className="count-badge">{filteredPending.length}</span></h5>
+        {/* ******** COUNTRY FILTER ADDED HERE ******** */}
         <div className="d-flex">
           <div className="d-flex justify-content-start">
-        <div className="floating-field">
-          <label className="floating-label">Country</label>
-          <select
-            className="form-control floating-select"
-            value={countryFilter}
-            onChange={(e) => setCountryFilter(e.target.value)}
-            style={{ maxWidth: "250px" }}
-          >
-            <option value="all">All</option>
-            {countries.map((country) => (
-              <option key={country.country_name} value={country.country_name}>
-                {country.country_name}
-              </option>
-            ))}
-          </select>
+            {/* DATE FILTER */}
+            <div className="floating-field d-flex date-input-wrapper" style={{ width: "125px" }}>
+              <CalendarFilter
+                onSelectDate={(date) => {
+                  setSelectedDate(date);
+                }}
+              />
+              <input
+                type="text"
+
+                value={selectedDate || ""}
+                className='form-control pad_30px'
+                disabled
+                readOnly />
+              {selectedDate && (
+                <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+                  ✖
+                </span>
+              )}
+
+            </div>
+            <div className="floating-field">
+              <label className="floating-label">Country</label>
+              <select
+                className="form-control floating-select"
+                value={countryFilter}
+                onChange={(e) => setCountryFilter(e.target.value)}
+                style={{ maxWidth: "250px" }}
+              >
+                <option value="all">All</option>
+                {countries.map((country) => (
+                  country.status === "ACTIVE" &&
+                  <option key={country.country_name} value={country.country_name}>
+                    {country.country_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={handleSave}>
+            Save
+          </button>
         </div>
       </div>
-        <button className="btn btn-primary btn-sm" onClick={handleSave}>
-          Save
-        </button>
-        </div>
-        </div>
       <div className="table-wrapper mt-3 table-wrap">
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th style={{width:"10px"}}>ID</th>
+              <th style={{ width: "10px" }}>ID</th>
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -175,8 +209,8 @@ export default function Second() {
           </thead>
 
           <tbody>
-            {pendingCandidates.length > 0 ? (
-              pendingCandidates.map((candidate) => (
+            {filteredPending.length > 0 ? (
+              filteredPending.map((candidate) => (
                 <tr key={candidate.candidate_id}>
                   <td class="td-wrap">{candidate.candidate_id}</td>
                   <td class="td-wrap">{candidate.comp_domain}</td>

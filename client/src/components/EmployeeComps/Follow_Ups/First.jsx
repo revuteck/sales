@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import CalendarFilter from "../../../utilities/CalendarFilter";
 
 export default function First() {
   const [candidates, setCandidates] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [countryFilter, setCountryFilter] = useState("all");
   const [countries, setCountries] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const empId = Number(localStorage.getItem("id"));
 
   /* ================= FETCH CANDIDATES ================= */
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get("https://rev-comp-backend.onrender.com/api/candidates");
+      const res = await axios.get("http://localhost:5000/api/candidates");
       setCandidates(res.data);
     } catch (error) {
       console.log("Error fetching candidates:", error);
@@ -26,7 +29,7 @@ export default function First() {
   /* ================= FETCH COUNTRIES ================= */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -55,10 +58,14 @@ export default function First() {
 
   /* ================= APPLY COUNTRY FILTER HERE ================= */
   const filteredByCountry = candidates.filter((candidate) => {
-    return (
+    const countrFil =
       countryFilter === "all" ||
-      candidate.country_name?.toLowerCase() === countryFilter.toLowerCase()
-    );
+      candidate.country_name?.toLowerCase() === countryFilter.toLowerCase();
+    const dateFilter =
+      selectedDate === null ||
+      selectedDate === formatDate(candidate.first_f_date) && candidate.first_f_status === "PENDING"
+      ;
+    return countrFil && dateFilter;
   });
 
   /* ================= FILTER FIRST FOLLOW UPS ================= */
@@ -78,47 +85,47 @@ export default function First() {
 
   /* ================= UPDATE STATUS ================= */
   const handleSave = async () => {
-     if (selectedRows.length === 0) {
+    if (selectedRows.length === 0) {
       return alert("⚠ Select at least one candidate!");
     }
     const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "The records move to DONE.",
-    // icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-  })
+      title: "Are you sure?",
+      text: "The records move to DONE.",
+      // icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    })
     if (result.isConfirmed) {
       // Put your undo code here
-    try {
-      await axios.put("https://rev-comp-backend.onrender.com/api/candidates/update-status", {
-        ids: selectedRows,
-        stage: "first",
-      });
+      try {
+        await axios.put("http://localhost:5000/api/candidates/update-status", {
+          ids: selectedRows,
+          stage: "first",
+        });
 
-     Swal.fire({
-        // title: "✔ Done!",
-        // text: "Updated Successfully",
-        icon: "success",
-        timer: 500,            // closes after 5 sec
-        showConfirmButton: false
-      });
+        Swal.fire({
+          // title: "✔ Done!",
+          // text: "Updated Successfully",
+          icon: "success",
+          timer: 500,            // closes after 5 sec
+          showConfirmButton: false
+        });
 
 
-      setSelectedRows([]);
-      fetchCandidates();
-    } catch (error) {
-      console.log(error);
-       Swal.fire({
-        icon: "failed",
-        timer:1500,
-        showCancelButton: false
+        setSelectedRows([]);
+        fetchCandidates();
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "failed",
+          timer: 1500,
+          showCancelButton: false
 
-       });
-    }
+        });
+      }
     } else {
       // User pressed Cancel
       console.log("Cancelled");
@@ -129,7 +136,7 @@ export default function First() {
   return (
     <div className="container">
 
-      
+
 
       <div className="d-flex justify-content-between align-items-center">
         <h5 className="">
@@ -140,26 +147,48 @@ export default function First() {
         {/* ******** COUNTRY FILTER ADDED HERE ******** */}
         <div className="d-flex">
           <div className="d-flex justify-content-start">
-        <div className="floating-field">
-          <label className="floating-label">Country</label>
-          <select
-            className="form-control floating-select"
-            value={countryFilter}
-            onChange={(e) => setCountryFilter(e.target.value)}
-            style={{ maxWidth: "250px" }}
-          >
-            <option value="all">All</option>
-            {countries.map((country) => (
-              <option key={country.country_name} value={country.country_name}>
-                {country.country_name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-        <button className="btn btn-primary btn-sm" onClick={handleSave}>
-          Save
-        </button>
+            {/* DATE FILTER */}
+            <div className="floating-field d-flex date-input-wrapper" style={{ width: "125px" }}>
+              <CalendarFilter
+                onSelectDate={(date) => {
+                  setSelectedDate(date);
+                }}
+              />
+              <input
+                type="text"
+
+                value={selectedDate || ""}
+                className='form-control pad_30px'
+                disabled
+                readOnly />
+              {selectedDate && (
+                <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+                  ✖
+                </span>
+              )}
+
+            </div>
+            <div className="floating-field">
+              <label className="floating-label">Country</label>
+              <select
+                className="form-control floating-select"
+                value={countryFilter}
+                onChange={(e) => setCountryFilter(e.target.value)}
+                style={{ maxWidth: "250px" }}
+              >
+                <option value="all">All</option>
+                {countries.map((country) => (
+                  country.status === "ACTIVE" &&
+                  <option key={country.country_name} value={country.country_name}>
+                    {country.country_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={handleSave}>
+            Save
+          </button>
         </div>
       </div>
 

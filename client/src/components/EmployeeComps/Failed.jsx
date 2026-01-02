@@ -22,7 +22,7 @@ export default function Failed() {
   // FETCH CANDIDATES
   useEffect(() => {
     axios
-      .get(`https://rev-comp-backend.onrender.com/api/candidates/emp?empId=${empId}`)
+      .get(`http://localhost:5000/api/candidates/emp?empId=${empId}`)
       .then((response) => {
         const allCandidates = response.data.empId || [];
         const failed = allCandidates.filter(
@@ -38,7 +38,7 @@ export default function Failed() {
   // FETCH COUNTRIES
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((res) => setCountries(res.data))
       .catch((err) => console.error("Error fetching countries", err));
   }, []);
@@ -71,7 +71,7 @@ export default function Failed() {
       return alert("⚠ Select at least one candidate!");
     }
     try {
-      await axios.put("https://rev-comp-backend.onrender.com/api/candidates/final-status", {
+      await axios.put("http://localhost:5000/api/candidates/final-status", {
         ids: selectedRows,
         status: "PENDING",
       });
@@ -88,7 +88,7 @@ export default function Failed() {
     if (selectedRows.length === 0) return alert("⚠ Select at least one candidate!");
 
     try {
-      await axios.put("https://rev-comp-backend.onrender.com/api/candidates/final-status", {
+      await axios.put("http://localhost:5000/api/candidates/final-status", {
         ids: selectedRows,
         status: "FAILED",
       });
@@ -109,7 +109,7 @@ export default function Failed() {
     try {
       const empId = localStorage.getItem("id");
 
-      await axios.post("https://rev-comp-backend.onrender.com/api/candidates/add-failed", {
+      await axios.post("http://localhost:5000/api/candidates/add-failed", {
         domain,
         name,
         website,
@@ -153,6 +153,7 @@ export default function Failed() {
             >
               <option value="all">All</option>
               {countries.map((country) => (
+                country.status === "ACTIVE" &&
                 <option key={country.country_name} value={country.country_name}>
                   {country.country_name}
                 </option>

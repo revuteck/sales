@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import CalendarFilter from "../../utilities/CalendarFilter"
 export default function First() {
   const [candidates, setCandidates] = useState([]);
   const [searchEmp, setSearchEmp] = useState("all"); // default: all employees
   const [countryFilter, setCountryFilter] = useState("all");
   const [countries, setCountries] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  console.log(selectedDate)
 
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/candidates")
+      .get("http://localhost:5000/api/candidates")
       .then((response) => {
         setCandidates(response.data);
       })
@@ -20,7 +22,7 @@ export default function First() {
   /* -------------------- FETCH COUNTRIES -------------------- */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -54,6 +56,10 @@ export default function First() {
   /* ---------------- FILTER LOGIC ---------------- */
 
   const pendingCandidates = candidates.filter((candidate) => {
+    const dateMatch = 
+        selectedDate === null ||
+        formatDate(candidate.first_f_date) === selectedDate &&
+        candidate.first_f_status === "PENDING"
     const statusMatch =
       isPastDate(candidate.first_f_date) &&
       candidate.first_f_status === "PENDING";
@@ -66,7 +72,7 @@ export default function First() {
       countryFilter === "all" ||
       candidate.country_name === countryFilter;
 
-    return statusMatch && empMatch && countryMatch;
+    return statusMatch && empMatch && countryMatch && dateMatch;
   });
 
   /* ---------------- UI ---------------- */
@@ -79,6 +85,27 @@ export default function First() {
           <span className="count-badge">{pendingCandidates.length}</span>
         </h5>
         <div className="d-flex">
+          {/* DATE FILTER */}
+          <div className="floating-field d-flex date-input-wrapper" style={{width: "125px"}}>
+              <CalendarFilter 
+                onSelectDate={(date) => {
+                      setSelectedDate(date);
+                  }} 
+              />
+              <input 
+                type="text" 
+                
+                value={selectedDate || ""} 
+                className='form-control pad_30px'
+                disabled
+                readOnly/>
+                {selectedDate && (
+                  <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+                    ✖
+                  </span>
+                )}
+                
+          </div>
           {/* CNTRY FILTER */}
           <div className="floating-field">
             <label className="floating-label">Country</label>
@@ -89,6 +116,7 @@ export default function First() {
             >
               <option value="all">All</option>
               {countries.map((country) => (
+                country.status === "ACTIVE" &&
                 <option key={country.country_name} value={country.country_name}>
                   {country.country_name}
                 </option>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Papa from "papaparse";
 
@@ -6,6 +6,7 @@ import Papa from "papaparse";
 
 export default function addCandidate() {
   const [csvData, setCsvData] = useState([]);
+  const [countries, setCountries] = useState([]);
 
 
 
@@ -50,7 +51,7 @@ export default function addCandidate() {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "https://rev-comp-backend.onrender.com/api/candidates/add",
+        "http://localhost:5000/api/candidates/add",
         { ...formData, empID, empName },
         {
           headers: {
@@ -178,7 +179,7 @@ export default function addCandidate() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "https://rev-comp-backend.onrender.com/api/bulk/candidates/bulk-insert",
+        "http://localhost:5000/api/bulk/candidates/bulk-insert",
         { data: csvData },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -200,8 +201,25 @@ export default function addCandidate() {
 
   };
 
+  //--------------
+  // GET COUNTRY
+  //--------------
+  const fetchCountries = async ()=>{
+    axios.get('http://localhost:5000/api/country/data')
+    .then(res =>{
+      setCountries(res.data);
+    })
+    .catch(err =>{
+      console.error("Error while getting countries:", err)
+    })
+  }
+  useEffect(()=>{
+    fetchCountries();
+  }, [])
+
   console.log("data from csv:", csvData)
   console.log(formData, empID, empName)
+
   return (
     <div className="container mt-3 form-sec-addcan">
       {/* <h3 className="mb-3 text-center">Add New Company</h3> */}
@@ -219,12 +237,12 @@ export default function addCandidate() {
             required
           >
             <option value="">Select Country</option>
-            <option value="1">CANADA</option>
-            <option value="2">USA</option>
-            <option value="3">SINGAPORE</option>
-            <option value="4">UAE</option>
-            <option value="5">QATAR</option>
-            <option value="6">SAUDI ARABIA</option>
+            {countries.map(c=>(
+              c.status === "ACTIVE" &&
+              <option value={c.country_id}>{c.country_name}</option>
+            ))}
+           
+            
           </select>
         </div>
 

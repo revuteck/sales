@@ -22,7 +22,7 @@ export default function AddFailedCompany() {
   /* ===================== GET COUNTRIES ===================== */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((res) => setCountries(res.data))
       .catch((err) => console.error("Error fetching countries", err));
   }, []);
@@ -47,7 +47,7 @@ export default function AddFailedCompany() {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "https://rev-comp-backend.onrender.com/api/candidates/add/failed",
+        "http://localhost:5000/api/candidates/add/failed",
         {
           countryId: formData.countryId,
           countryName:
@@ -103,6 +103,7 @@ export default function AddFailedCompany() {
           >
             <option value="">Select Country</option>
             {countries.map((country) => (
+              country.status === "ACTIVE" &&
               <option
                 key={country.country_id}
                 value={country.country_id}

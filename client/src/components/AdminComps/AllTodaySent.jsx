@@ -50,7 +50,7 @@ export default function TodayAllSent() {
   const load = async () => {
     try {
       const res = await axios.get(
-        "https://rev-comp-backend.onrender.com/api/candidates",
+        "http://localhost:5000/api/candidates",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCandidates(res.data);
@@ -62,7 +62,7 @@ export default function TodayAllSent() {
   const loadEmployees = async () => {
     try {
       const res = await axios.get(
-        "https://rev-comp-backend.onrender.com/api/employee/data"
+        "http://localhost:5000/api/employee/data"
       );
       setEmployees(res.data);
     } catch (err) {
@@ -73,7 +73,7 @@ export default function TodayAllSent() {
   const loadCountries = async () => {
     try {
       const res = await axios.get(
-        "https://rev-comp-backend.onrender.com/api/country/data"
+        "http://localhost:5000/api/country/data"
       );
       setCountries(res.data);
     } catch (err) {
@@ -139,7 +139,7 @@ export default function TodayAllSent() {
 
     try {
       await axios.put(
-        "https://rev-comp-backend.onrender.com/api/candidates/undo-status",
+        "http://localhost:5000/api/candidates/undo-status",
         {
           ids: selectedRows,
           stage: capitalStage,
@@ -205,6 +205,7 @@ export default function TodayAllSent() {
           >
             <option value="all">All Countries</option>
             {countries.map((c) => (
+              c.status === "ACTIVE" &&
               <option
                 key={c.country_id}
                 value={c.country_name}

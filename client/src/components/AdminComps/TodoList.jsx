@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
 export default function TodoList() {
   const [candidates, setCandidates] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -8,6 +9,8 @@ export default function TodoList() {
   const [empFilter, setEmpFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");
   const [countries, setCountries] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  
 
   /* -------------------- FETCH CANDIDATES -------------------- */
   useEffect(() => {
@@ -16,7 +19,7 @@ export default function TodoList() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get("https://rev-comp-backend.onrender.com/api/candidates");
+      const res = await axios.get("http://localhost:5000/api/candidates");
       setCandidates(res.data);
     } catch (err) {
       console.error(err);
@@ -26,7 +29,7 @@ export default function TodoList() {
   /* -------------------- FETCH COUNTRIES -------------------- */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -67,7 +70,7 @@ export default function TodoList() {
     }
 
     try {
-      await axios.put("https://rev-comp-backend.onrender.com/api/candidates/update-status", {
+      await axios.put("http://localhost:5000/api/candidates/update-status", {
         ids: selectedRows,
         stage,
       });
@@ -142,7 +145,7 @@ export default function TodoList() {
         </h5>
 
         <div className="d-flex">
-
+          
           {/* Country Filter */}
           <div className="floating-field">
             <label className="floating-label">Country</label>
@@ -154,6 +157,7 @@ export default function TodoList() {
             >
               <option value="all">All</option>
               {countries.map((country) => (
+                country.status === "ACTIVE" &&
                 <option key={country.country_name} value={country.country_name}>
                   {country.country_name}
                 </option>

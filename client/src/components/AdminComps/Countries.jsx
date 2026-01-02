@@ -9,7 +9,7 @@ export default function Countries() {
     // Fetch Countries
     const fetchCountries = async () => {
         try {
-            const res = await axios.get("https://rev-comp-backend.onrender.com/api/country/data");
+            const res = await axios.get("http://localhost:5000/api/country/data");
             setCountries(res.data);
         } catch (err) {
             console.error("Error:", err);
@@ -40,7 +40,7 @@ export default function Countries() {
         const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
 
         try {
-            await axios.put("https://rev-comp-backend.onrender.com/api/country/update-status", {
+            await axios.put("http://localhost:5000/api/country/update-status", {
                 id,
                 status: newStatus,
             });
@@ -145,11 +145,14 @@ export default function Countries() {
 
                                         {/* TOGGLE BUTTON */}
                                         <button
-                                            className="btn btn-sm btn-warning"
-                                            onClick={() => toggleStatus(c.country_id, c.status)}
-                                        >
-                                            Toggle
-                                        </button>
+  className={`btn btn-sm ${
+    c.status === "ACTIVE" ? "btn-success" : "btn-danger"
+  }`}
+  onClick={() => toggleStatus(c.country_id, c.status)}
+>
+  {c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"}
+</button>
+
                                     </td>
                                 </tr>
                             ))}

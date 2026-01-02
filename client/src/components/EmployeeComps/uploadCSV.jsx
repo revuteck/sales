@@ -117,7 +117,7 @@ export default function UploadCSV() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "https://rev-comp-backend.onrender.com/api/bulk/candidates/bulk-insert",
+        "http://localhost:5000/api/bulk/candidates/bulk-insert",
         { data: csvData },
         { headers: { Authorization: `Bearer ${token}` } }
       );

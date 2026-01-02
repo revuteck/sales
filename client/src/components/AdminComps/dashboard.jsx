@@ -2,6 +2,23 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Candidates from "./Candidates";
 import { NavLink } from "react-router-dom";
+import { isTomorrow } from "../../utilities/Dates";
+
+const stages = [
+  { key: "first", status: "first_f_status", date: "first_f_date" },
+  { key: "second", status: "second_f_status", date: "second_f_date" },
+  { key: "third", status: "third_f_status", date: "third_f_date" },
+  { key: "fourth", status: "fourth_f_status", date: "fourth_f_date" }
+];
+const tomorrowCounts = {
+  first: 0,
+  second: 0,
+  third: 0,
+  fourth: 0,
+};
+
+
+
 
 export default function Dashboard() {
   const [view, setView] = useState("dashboard");
@@ -27,6 +44,12 @@ export default function Dashboard() {
     fourth_todo:0,
     
   });
+  const tomorrowCounts = {
+  first_tmr: 0,
+  second_tmr: 0,
+  third_tmr: 0,
+  fourth_tmr: 0,
+};
 
   const [employeeStats, setEmployeeStats] = useState([]); // NEW
 
@@ -38,11 +61,11 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const empRes = await axios.get("https://rev-comp-backend.onrender.com/api/employee/data", {
+      const empRes = await axios.get("http://localhost:5000/api/employee/data", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const candRes = await axios.get("https://rev-comp-backend.onrender.com/api/candidates", {
+      const candRes = await axios.get("http://localhost:5000/api/candidates", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -51,6 +74,22 @@ export default function Dashboard() {
 
       const activeEmployees = employees.filter(e => e.status === "ACTIVE").length;
       const inactiveEmployees = employees.filter(e => e.status === "INACTIVE").length;
+//           TMR COUNT
+      candidates.forEach(c => {
+        if (isTomorrow(c.first_f_date) && c.first_f_status === "PENDING") {
+          tomorrowCounts.first_tmr++;
+        }
+        if (isTomorrow(c.second_f_date) && c.second_f_status === "PENDING") {
+          tomorrowCounts.second_tmr++;
+        }
+        if (isTomorrow(c.third_f_date) && c.third_f_status === "PENDING") {
+          tomorrowCounts.third_tmr++;
+        }
+        if (isTomorrow(c.fourth_f_date) && c.fourth_f_status === "PENDING") {
+          tomorrowCounts.fourth_tmr++;
+        }
+      });
+      
 
       // ---------------------------------
       // 🔥 EMPLOYEE WORK PROGRESS LOGIC
@@ -94,11 +133,21 @@ export default function Dashboard() {
             (c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date))
         ).length;
 
+        const tmrList = assigned.filter(
+          c =>
+            (c.first_f_status === "PENDING" && isTomorrow(c.first_f_date)) ||
+            (c.second_f_status === "PENDING" && isTomorrow(c.second_f_date)) ||
+            (c.third_f_status === "PENDING" && isTomorrow(c.third_f_date)) ||
+            (c.fourth_f_status === "PENDING" && isTomorrow(c.fourth_f_date))
+          
+        ).length
+
         return {
           emp_name: emp.emp_name,
           totalCompanies: assigned.length,
           todo,
           pending,
+          tmrList,
         };
       });
 
@@ -123,13 +172,21 @@ export default function Dashboard() {
         first_todo:   candidates.filter(c =>  c.first_f_status === "PENDING" && isToday(c.first_f_date)).length ,
         second_todo: candidates.filter(c =>  c.second_f_status === "PENDING" && isToday(c.second_f_date) && c.first_f_status ==="DONE").length ,
         third_todo: candidates.filter(c =>  c.third_f_status === "PENDING" && isToday(c.third_f_date) && c.second_f_status ==="DONE").length ,
-        fourth_todo: candidates.filter(c =>  c.fourth_f_status === "PENDING" && isToday(c.fourth_f_date) && c.third_f_status ==="DONE").length
+        fourth_todo: candidates.filter(c =>  c.fourth_f_status === "PENDING" && isToday(c.fourth_f_date) && c.third_f_status ==="DONE").length,
+         first_tmr: tomorrowCounts.first_tmr,
+          second_tmr: tomorrowCounts.second_tmr,
+          third_tmr: tomorrowCounts.third_tmr,
+          fourth_tmr: tomorrowCounts.fourth_tmr
       });
 
     } catch (err) {
       console.error(err);
     }
   };
+console.log(tomorrowCounts.first);   // tomorrow first follow-up count  
+console.log(tomorrowCounts.second);  // tomorrow second follow-up count  
+console.log(tomorrowCounts.third);   // tomorrow third follow-up count  
+console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count  
 
   return (
     <>
@@ -239,7 +296,18 @@ export default function Dashboard() {
                     <th style={{width: "94px"}}><span className="label count-span">Remaining</span></th>
                     <td><span>: {counts.first_remains}+{counts.second_remains}+{counts.third_remains}+{counts.fourth_remains}</span></td>
                     <td><h2 className="value text-danger">={counts.first_remains+counts.second_remains+counts.third_remains+counts.fourth_remains}</h2></td>
-                  </tr>             
+                  </tr>   
+                  <tr>
+                    <th colSpan="8">
+                      <span className="label">Tomorrow's Mails</span>
+                    </th>
+                    <td>
+                      <span className="">: {counts.first_tmr}+{counts.second_tmr}+{counts.third_tmr}+{counts.fourth_tmr}</span>
+                    </td>
+                    <td>
+                      <h2 className="value">={counts.first_tmr + counts.second_tmr + counts.third_tmr + counts.fourth_tmr}</h2>
+                    </td>
+                  </tr>          
                 </div>
               </div>
             </div>
@@ -291,6 +359,10 @@ export default function Dashboard() {
                   <tr>
                     <td><div>⏳ Total Pending</div></td>
                     <td><b className="text-danger"> : {emp.pending}</b></td>
+                  </tr>
+                  <tr>
+                    <td><div>⏳ Tomorrow Follow ups</div></td>
+                    <td><b className="text-danger"> : {emp.tmrList}</b></td>
                   </tr>
                   
                   

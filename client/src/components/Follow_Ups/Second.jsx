@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import CalendarFilter from "../../utilities/CalendarFilter";
 
 export default function Second() {
   const [candidates, setCandidate] = useState([]);
   const [searchEmp, setSearchEmp] = useState("all"); // ✅ emp filter
-    const [countryFilter, setCountryFilter] = useState("all");
-    const [countries, setCountries] = useState([]);
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [countries, setCountries] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   // Fetch only once
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/candidates")
+      .get("http://localhost:5000/api/candidates")
       .then((response) => {
         setCandidate(response.data);
       })
@@ -22,7 +24,7 @@ export default function Second() {
   /* -------------------- FETCH COUNTRIES -------------------- */
   useEffect(() => {
     axios
-      .get("https://rev-comp-backend.onrender.com/api/country/data")
+      .get("http://localhost:5000/api/country/data")
       .then((response) => setCountries(response.data))
       .catch((err) => console.log("Error fetching countries", err));
   }, []);
@@ -56,11 +58,15 @@ export default function Second() {
   /* ---------------- FILTER LOGIC ---------------- */
 
   const pendingCandidates = candidates.filter((candidate) => {
+    const dateMatch =
+      selectedDate === null ||
+      formatDate(candidate.second_f_date) === selectedDate &&
+      candidate.second_f_status === "PENDING"
     const statusMatch =
       isPastDate(candidate.second_f_date) &&
       candidate.second_f_status === "PENDING";
 
-     const empMatch =
+    const empMatch =
       searchEmp === "all" ||
       candidate.emp_name?.toLowerCase() === searchEmp.toLowerCase();
 
@@ -68,7 +74,7 @@ export default function Second() {
       countryFilter === "all" ||
       candidate.country_name === countryFilter;
 
-    return statusMatch && empMatch && countryMatch;
+    return statusMatch && empMatch && countryMatch && dateMatch;
   });
 
   /* ---------------- UI ---------------- */
@@ -81,6 +87,27 @@ export default function Second() {
           <span className="count-badge">{pendingCandidates.length}</span>
         </h5>
         <div className="d-flex">
+          {/* DATE FILTER */}
+          <div className="floating-field d-flex date-input-wrapper" style={{ width: "125px" }}>
+            <CalendarFilter
+              onSelectDate={(date) => {
+                setSelectedDate(date);
+              }}
+            />
+            <input
+              type="text"
+
+              value={selectedDate || ""}
+              className='form-control pad_30px'
+              disabled
+              readOnly />
+            {selectedDate && (
+              <span className="clear-btn-input" onClick={() => setSelectedDate(null)}>
+                ✖
+              </span>
+            )}
+
+          </div>
           {/* CNTRY FILTER */}
           <div className="floating-field">
             <label className="floating-label">Country</label>
@@ -91,6 +118,7 @@ export default function Second() {
             >
               <option value="all">All</option>
               {countries.map((country) => (
+                country.status === "ACTIVE" &&
                 <option key={country.country_name} value={country.country_name}>
                   {country.country_name}
                 </option>
@@ -98,23 +126,23 @@ export default function Second() {
             </select>
           </div>
 
-        {/* EMP FILTER */}
-        <div className="floating-field">
-          <label className="floating-label">Emp</label>
-          <select
-            className="form-control floating-select"
-            value={searchEmp}
-            onChange={(e) => setSearchEmp(e.target.value)}
-          >
-            <option value="all">All</option>
-            {employees.map((emp) => (
-              <option key={emp} value={emp}>
-                {emp}
-              </option>
-            ))}
-          </select>
+          {/* EMP FILTER */}
+          <div className="floating-field">
+            <label className="floating-label">Emp</label>
+            <select
+              className="form-control floating-select"
+              value={searchEmp}
+              onChange={(e) => setSearchEmp(e.target.value)}
+            >
+              <option value="all">All</option>
+              {employees.map((emp) => (
+                <option key={emp} value={emp}>
+                  {emp}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
       </div>
 
       {/* TABLE */}
@@ -122,7 +150,7 @@ export default function Second() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th style={{width:"10px"}}>ID</th>
+              <th style={{ width: "10px" }}>ID</th>
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>

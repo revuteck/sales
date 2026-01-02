@@ -5,7 +5,7 @@ import '../../assets/css/styles.css'
 export default function Candidates() {
     const [candidates, setCandidates] = React.useState([])
     useEffect(() => {
-        axios.get('https://rev-comp-backend.onrender.com/api/candidates')
+        axios.get('http://localhost:5000/api/candidates')
             .then(response => {
                 setCandidates(response.data);
             })

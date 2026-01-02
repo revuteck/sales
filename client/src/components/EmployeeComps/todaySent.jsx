@@ -23,9 +23,13 @@ export default function TodaySent() {
     );
   };
 
-  const formatDate = (date) => {
-    if (!date) return "—";
-    return new Date(date).toLocaleDateString("en-IN");
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const d = new Date(dateString);
+
+    return `${String(d.getDate()).padStart(2, "0")}-${String(
+      d.getMonth() + 1
+    ).padStart(2, "0")}-${d.getFullYear()}`;
   };
 
   const handleCheckbox = (id) => {
@@ -39,7 +43,7 @@ export default function TodaySent() {
     const load = async () => {
       try {
         const res = await axios.get(
-          "https://rev-comp-backend.onrender.com/api/candidates",
+          "http://localhost:5000/api/candidates",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -109,7 +113,7 @@ export default function TodaySent() {
   try {
     // API call
     await axios.put(
-      "https://rev-comp-backend.onrender.com/api/candidates/undo-status",
+      "http://localhost:5000/api/candidates/undo-status",
       {
         ids: selectedRows,
         stage: capitalStage,
@@ -168,8 +172,10 @@ export default function TodaySent() {
           <thead className="table-dark">
             <tr>
               <th style={{width:"10px"}}>ID</th>
+              <th>Domain</th>
               <th>Company</th>
               <th>Email</th>
+              <th>Website</th>
               <th>Date</th>
               <th>Status</th>
               <th style={{width:"10px"}}>Select</th>
@@ -180,9 +186,12 @@ export default function TodaySent() {
             {list.length > 0 ? (
               list.map((c) => (
                 <tr key={c.candidate_id}>
+                  
                   <td>{c.candidate_id}</td>
+                  <td>{c.comp_domain}</td>
                   <td>{c.comp_name}</td>
                   <td>{c.email}</td>
+                  <td><a href={c.website}>{c.website}</a></td>
                   <td>{formatDate(c[dateField])}</td>
                   <td className="text-success fw-bold">DONE</td>
                   <td>

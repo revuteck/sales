@@ -27,7 +27,7 @@ export default function AddEmp() {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "https://rev-comp-backend.onrender.com/api/employee/add",
+        "http://localhost:5000/api/employee/add",
         formData,
         {
           headers: {

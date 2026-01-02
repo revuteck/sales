@@ -25,7 +25,7 @@ export default function Candidates() {
 
     const empId = localStorage.getItem("id");
     useEffect(() => {
-        axios.get(`https://rev-comp-backend.onrender.com/api/candidates/emp?empId=${empId}`)
+        axios.get(`http://localhost:5000/api/candidates/emp?empId=${empId}`)
             .then(response => {
                 setCandidates(response.data.empId);
             })
@@ -34,7 +34,7 @@ export default function Candidates() {
             })
     }, [empId]);
     useEffect(() => {
-        axios.get('https://rev-comp-backend.onrender.com/api/country/data')
+        axios.get('http://localhost:5000/api/country/data')
             .then(response => {
                 setCountries(response.data);
             })
@@ -68,7 +68,7 @@ export default function Candidates() {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`https://rev-comp-backend.onrender.com/api/candidates/delete/${id}`);
+            await axios.delete(`http://localhost:5000/api/candidates/delete/${id}`);
 
             // Remove from UI immediately
             setCandidates(prev =>
@@ -90,7 +90,7 @@ export default function Candidates() {
             };
 
             await axios.put(
-                `https://rev-comp-backend.onrender.com/api/candidates/update/${editCandidate.candidate_id}`,
+                `http://localhost:5000/api/candidates/update/${editCandidate.candidate_id}`,
                 payload
             );
 
@@ -120,7 +120,7 @@ export default function Candidates() {
                     <h5>Companies : <span className='count-badge'>{filteredCandidates.length}</span></h5>
 
                     <div className='d-flex' id='tops'>
-                        <div className="floating-field">
+                        <div className="floating-field" style={{width:"125px"}}>
                             <button className="btn btn-primary"
                                 onClick={() => {
                                     setView("uploadcsv");
@@ -150,6 +150,7 @@ export default function Candidates() {
                             >
                                 <option value="all">All</option>
                                 {countries.map((c) => (
+                                    c.status==="ACTIVE" &&
                                     <option key={c.country_name} value={c.country_name}>
                                         {c.country_name}
                                     </option>
