@@ -26,7 +26,7 @@ app.get("/api/dbinfo", (req, res) => {
 });
 
 app.get("/api/health", (req, res) => {
-  res.json({ status: "From server, OK", time: new Date() });
+  res.json({ status: "From server response, OK", time: new Date() });
 });
 
 app.get("/", (req, res) => {
