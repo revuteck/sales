@@ -18,7 +18,7 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // Test Route
 app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", time: new Date() });
+  res.json({ status: "From server, OK", time: new Date() });
 });
 
 app.get("/", (req, res) => {
