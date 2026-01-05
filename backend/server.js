@@ -36,7 +36,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("Server is running..!");
+    res.send("Server is running (temp)..!");
 });
 
 // Register DB Routes
