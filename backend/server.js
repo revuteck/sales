@@ -7,14 +7,23 @@ const PORT = process.env.PORT || 5000;
 // ---- ENABLE CORS BEFORE ROUTES ----
 app.use(cors({
     origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
 // Allow JSON data
 // app.use(express.json());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
+
+//For no cache 
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  next();
+});
+
 
 // Test Route
 app.get("/api/version", (req, res) => {
@@ -36,8 +45,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("Server is running (temp)..!");
+  res.send("Server is running (temp)..! " + new Date().toISOString());
 });
+
 
 // Register DB Routes
 const candidateRoutes = require("./src/routes/candidateRoutes");
