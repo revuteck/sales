@@ -17,6 +17,12 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // Test Route
+app.get("/api/version", (req, res) => {
+  res.json({
+    version: "DB-LOCALHOST-2026-01-05-11:45",
+  });
+});
+
 app.get("/api/dbinfo", (req, res) => {
   res.json({
     host: "localhost",
