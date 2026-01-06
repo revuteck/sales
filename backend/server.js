@@ -45,7 +45,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Server is running (temp)..! " + new Date().toISOString());
+  res.send("Server is running check the status " + new Date().toISOString());
 });
 
 
