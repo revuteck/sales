@@ -6,7 +6,7 @@
 const db = mysql.createPool({
   host: "localhost",
   user: "u122144590_clientsales",
-  password: "Revuteck@2101.",
+  password: "Revuteck@1221.",
   database: "u122144590_clientsales",
   port: 3306,
   waitForConnections: true,
