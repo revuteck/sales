@@ -178,11 +178,14 @@ export default function Failed() {
       </div>
 
       {/* TABLE */}
-      <div className="table-wrapper mt-4">
+      <div className="table-wrapper mt-4"
+       style={{ maxHeight: "570px", overflowY: "auto", overflowX: "hidden" }}
+       >
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th style={{width:"10px"}}>Id</th>
+              <th style={{width:"2px"}}>No.</th>
+              {/* <th style={{width:"10px"}}>Id</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -198,9 +201,10 @@ export default function Failed() {
 
           <tbody>
             {filteredCandidates.length > 0 ? (
-              filteredCandidates.map((c) => (
+              filteredCandidates.map((c, index) => (
                 <tr key={c.candidate_id} style={{ background: "red" }}>
-                  <td className='td-wrap'>{c.candidate_id}</td>
+                  <td className='td-wrap'>{index+1}</td>
+                  {/* <td className='td-wrap'>{c.candidate_id}</td> */}
                   <td className='td-wrap'>{c.comp_domain}</td>
                   <td className='td-wrap'>{c.comp_name}</td>
                   <td className='td-wrap'>

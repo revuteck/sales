@@ -73,7 +73,7 @@ export default function First() {
     (candidate) =>
       candidate.first_f_status === "PENDING" &&
       isPastDate(candidate.first_f_date) &&
-      candidate.assigned_emp_id === empId
+      candidate.assigned_emp_id === empId && candidate.final_status !== "FAILED"
   );
 
   /* ================= CHECKBOX HANDLER ================= */
@@ -196,7 +196,8 @@ export default function First() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th style={{ width: "10px" }}>ID</th>
+              <th style={{ width: "2px" }}>No.</th>
+              {/* <th style={{ width: "10px" }}>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -213,9 +214,10 @@ export default function First() {
 
           <tbody>
             {pendingCandidates.length > 0 ? (
-              pendingCandidates.map((candidate) => (
+              pendingCandidates.map((candidate, index) => (
                 <tr key={candidate.candidate_id}>
-                  <td className="td-wrap">{candidate.candidate_id}</td>
+                  <td>{index+1}</td>
+                  {/* <td className="td-wrap">{candidate.candidate_id}</td> */}
                   <td className="td-wrap">{candidate.comp_domain}</td>
                   <td className="td-wrap">{candidate.comp_name}</td>
                   <td className="td-wrap">

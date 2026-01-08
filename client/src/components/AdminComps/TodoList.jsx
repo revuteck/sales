@@ -20,7 +20,14 @@ export default function TodoList() {
   const fetchCandidates = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/candidates");
-      setCandidates(res.data);
+
+      const allCandidates = res.data || [];
+
+      // ✅ EXCLUDE FAILED COMPANIES
+      const notFailedCandidates = allCandidates.filter(
+        (c) => c.final_status?.toUpperCase() !== "FAILED"
+      );
+      setCandidates(notFailedCandidates);
     } catch (err) {
       console.error(err);
     }
@@ -195,7 +202,8 @@ export default function TodoList() {
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th>ID</th>
+              <th style={{width:"2px"}}>ID</th>
+              {/* <th>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -211,9 +219,10 @@ export default function TodoList() {
 
           <tbody>
             {list.length > 0 ? (
-              list.map((c) => (
+              list.map((c, index) => (
                 <tr key={c.candidate_id}>
-                  <td className="td-wrap">{c.candidate_id}</td>
+                  <td className="td-wrap">{index+1}</td>
+                  {/* <td className="td-wrap">{c.candidate_id}</td> */}
                   <td className="td-wrap">{c.comp_domain}</td>
                   <td className="td-wrap">{c.comp_name}</td>
                   <td className="td-wrap">

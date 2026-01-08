@@ -38,6 +38,7 @@ export default function Dashboard() {
     second_senttoday: 0,
     third_senttoday: 0,
     fourth_senttoday: 0,
+    registered_comps:0,
     
   });
 
@@ -112,7 +113,7 @@ export default function Dashboard() {
       });
 
       // candidates assigned to login user
-      const myCompanies = data.filter(c => c.assigned_emp_id === empId);
+      const myCompanies = data.filter(c => c.assigned_emp_id === empId && c.final_status !== "FAILED");
       setCandidates(myCompanies)
         myCompanies.forEach(c => {
     if (isTomorrow(c.first_f_date) && c.first_f_status === "PENDING") {
@@ -131,7 +132,7 @@ export default function Dashboard() {
 
       // reusable function
       const filterTodo = (stageStatus, stageDate, prevStatus) =>
-        data.filter(
+        myCompanies.filter(
           c => c.assigned_emp_id === empId &&
             c[stageStatus] === "PENDING" && c[prevStatus] === "DONE" &&
             isToday(c[stageDate])
@@ -196,7 +197,8 @@ export default function Dashboard() {
         first_tmr: tomorrowCounts.first_tmr,
         second_tmr: tomorrowCounts.second_tmr,
         third_tmr: tomorrowCounts.third_tmr,
-        fourth_tmr: tomorrowCounts.fourth_tmr
+        fourth_tmr: tomorrowCounts.fourth_tmr,
+        registered_comps: myCompanies.filter(c => c.date_of_register && Today(c.date_of_register)).length
 
 
       });
@@ -283,7 +285,15 @@ export default function Dashboard() {
                   </tr>
                   <tr>
                     <th colSpan="8">
-                      <span className="label">Tomorrow's Mails</span>
+                      <span className="label">TD Registered</span>
+                    </th>
+                    <td>
+                      <h2 className="value">: {counts.registered_comps}</h2>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th colSpan="8">
+                      <span className="label">TMR's Mails</span>
                     </th>
                     <td>
                       <span className="">: {counts.first_tmr}+{counts.second_tmr}+{counts.third_tmr}+{counts.fourth_tmr}</span>

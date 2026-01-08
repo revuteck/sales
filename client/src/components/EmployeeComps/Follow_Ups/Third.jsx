@@ -73,7 +73,7 @@ export default function Third() {
     (candidate) =>
       candidate.third_f_status === "PENDING" &&
       isPastDate(candidate.third_f_date) &&
-      candidate.assigned_emp_id === empId
+      candidate.assigned_emp_id === empId && candidate.final_status !== "FAILED"
   );
 
   /* ================= CHECKBOX ================= */
@@ -187,7 +187,8 @@ export default function Third() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th>ID</th>
+              <th style={{width:"2px"}}>No.</th>
+              {/* <th>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -204,9 +205,10 @@ export default function Third() {
 
           <tbody>
             {pendingCandidates.length > 0 ? (
-              pendingCandidates.map((c) => (
+              pendingCandidates.map((c, index) => (
                 <tr key={c.candidate_id}>
-                  <td className="td-wrap">{c.candidate_id}</td>
+                  <td className="td-wrap">{index+1}</td>
+                  {/* <td className="td-wrap">{c.candidate_id}</td> */}
                   <td className="td-wrap">{c.comp_domain}</td>
                   <td className="td-wrap">{c.comp_name}</td>
                   <td className="td-wrap">

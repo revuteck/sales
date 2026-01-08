@@ -141,17 +141,17 @@ export default function Countries() {
                                     <td className="d-flex justify-content-between align-items-center">
 
                                         {/* STATUS TEXT */}
-                                        <span>{c.status}</span>
+                                        {/* <span>{c.status}</span> */}
 
                                         {/* TOGGLE BUTTON */}
                                         <button
-  className={`btn btn-sm ${
-    c.status === "ACTIVE" ? "btn-success" : "btn-danger"
-  }`}
-  onClick={() => toggleStatus(c.country_id, c.status)}
->
-  {c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"}
-</button>
+                                            className={`btn btn-sm ${
+                                                c.status === "ACTIVE" ? "btn-success" : "btn-danger"
+                                            }`}
+                                            onClick={() => toggleStatus(c.country_id, c.status)}
+                                            >
+                                            {c.status === "ACTIVE" ? "INACTIVE" : "ACTIVE"}
+                                            </button>
 
                                     </td>
                                 </tr>

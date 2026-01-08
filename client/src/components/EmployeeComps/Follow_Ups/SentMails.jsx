@@ -83,7 +83,8 @@ export default function SentMails() {
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th style={{ width: "10px" }}>ID</th>
+              <th style={{ width: "2px" }}>No.</th>
+              {/* <th style={{ width: "10px" }}>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -97,9 +98,10 @@ export default function SentMails() {
 
           <tbody>
             {list.length > 0 ? (
-              list.map((c) => (
+              list.map((c, index) => (
                 <tr key={c.candidate_id}>
-                  <td className="td-wrap">{c.candidate_id}</td>
+                  <td className="td-wrap">{index+1}</td>
+                  {/* <td className="td-wrap">{c.candidate_id}</td> */}
                   <td className="td-wrap">{c.comp_domain}</td>
                   <td className="td-wrap">{c.comp_name}</td>
                   <td className="td-wrap">

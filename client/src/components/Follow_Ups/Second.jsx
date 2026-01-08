@@ -56,8 +56,11 @@ export default function Second() {
   ];
 
   /* ---------------- FILTER LOGIC ---------------- */
+  const filterPendings = candidates.filter(
+  c => c.final_status !== "FAILED"
+  );
 
-  const pendingCandidates = candidates.filter((candidate) => {
+  const pendingCandidates = filterPendings.filter((candidate) => {
     const dateMatch =
       selectedDate === null ||
       formatDate(candidate.second_f_date) === selectedDate &&
@@ -150,7 +153,8 @@ export default function Second() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th style={{ width: "10px" }}>ID</th>
+              <th style={{ width: "2px" }}>No.</th>
+              {/* <th style={{ width: "10px" }}>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -166,9 +170,10 @@ export default function Second() {
 
           <tbody>
             {pendingCandidates.length > 0 ? (
-              pendingCandidates.map((candidate) => (
+              pendingCandidates.map((candidate, index) => (
                 <tr key={candidate.candidate_id}>
-                  <td className="td-wrap">{candidate.candidate_id}</td>
+                  <td className="td-wrap">{index+1}</td>
+                  {/* <td className="td-wrap">{candidate.candidate_id}</td> */}
                   <td className="td-wrap">{candidate.comp_domain}</td>
                   <td className="td-wrap">{candidate.comp_name}</td>
                   <td className="td-wrap">

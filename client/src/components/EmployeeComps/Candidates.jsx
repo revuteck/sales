@@ -55,7 +55,11 @@ export default function Candidates() {
         const year = date.getFullYear();
         return `${day}-${month}-${year}`;
     };
-    const filteredCandidates = candidates.filter((c) => {
+
+    const noFailedCandidates = candidates.filter(
+        c => c.final_status !== "FAILED"
+    )
+    const filteredCandidates = noFailedCandidates.filter((c) => {
         const stateMatch = filterStatus === "all" ||
             c.final_status?.trim().toUpperCase() === filterStatus.toUpperCase();
 
@@ -192,7 +196,8 @@ export default function Candidates() {
                     <table className="table table-bordered table-hover table-follow-ups">
                         <thead className="table-dark">
                             <tr>
-                                <th style={{ width: "10px" }}>id</th>
+                                <th style={{ width: "2px" }}>No.</th>
+                                {/* <th style={{ width: "10px" }}>id</th> */}
                                 <th>Company Domain</th>
                                 <th>Company Name</th>
                                 <th>Website</th>
@@ -207,13 +212,14 @@ export default function Candidates() {
                         </thead>
 
                         <tbody>
-                            {filteredCandidates.map((candidate) => (
+                            {filteredCandidates.map((candidate, index) => (
                                 <tr key={candidate.candidate_id}
                                     style={{
                                         backgroundColor: candidate.first_f_status === "DONE" ? "#c8f7c5" : "red"
                                     }}
                                 >
-                                    <td className='td-wrap'>{candidate.candidate_id}</td>
+                                    <td className='td-wrap'>{index+1}</td>
+                                    {/* <td className='td-wrap'>{candidate.candidate_id}</td> */}
                                     <td className='td-wrap'>{candidate.comp_domain}</td>
                                     <td className='td-wrap'>{candidate.comp_name}</td>
 

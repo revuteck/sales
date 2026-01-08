@@ -17,7 +17,13 @@ export default function TodoList() {
   const fetchCandidates = async () => {
     try {
       const res = await axios.get(`http://localhost:5000/api/candidates/emp?empId=${empId}`);
-      setCandidates(res.data.empId);
+      const allCandidates = res.data.empId || [];
+
+      // ✅ EXCLUDE FAILED COMPANIES
+      const notFailedCandidates = allCandidates.filter(
+        (c) => c.final_status?.toUpperCase() !== "FAILED"
+      );
+      setCandidates(notFailedCandidates);
     } catch (err) {
       console.error(err);
     }
@@ -99,6 +105,7 @@ export default function TodoList() {
         // Current Stage Condition
         const dateToday = isToday(c[s.date]);
         const statusPending = c[s.status] === "PENDING";
+        
 
         // First follow-up → no previous stage
         if (!prevStage) {
@@ -157,7 +164,8 @@ export default function TodoList() {
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th style={{ width: "10px" }}>ID</th>
+              <th style={{ width: "2px" }}>No.</th>
+              {/* <th style={{ width: "10px" }}>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -172,9 +180,10 @@ export default function TodoList() {
 
           <tbody>
             {list.length > 0 ? (
-              list.map((c) => (
+              list.map((c, index) => (
                 <tr key={c.candidate_id}>
-                  <td className="td-wrap">{c.candidate_id}</td>
+                  <td className="td-wrap">{index+1}</td>
+                  {/* <td className="td-wrap">{c.candidate_id}</td> */}
                   <td className="td-wrap">{c.comp_domain}</td>
                   <td className="td-wrap">{c.comp_name}</td>
                   <td className="td-wrap">

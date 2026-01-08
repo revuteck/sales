@@ -66,7 +66,7 @@ export default function Second() {
   const filteredPending = candidates.filter(c => {
     const isPending = c.second_f_status === "PENDING" &&
       isPastDate(c.second_f_date) &&
-      c.assigned_emp_id === empId;
+      c.assigned_emp_id === empId && c.final_status !== "FAILED";
 
     const matchCountry =
       countryFilter === "all" ||
@@ -192,7 +192,8 @@ export default function Second() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th style={{ width: "10px" }}>ID</th>
+              <th style={{ width: "2px" }}>No</th>
+              {/* <th style={{ width: "10px" }}>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -210,9 +211,10 @@ export default function Second() {
 
           <tbody>
             {filteredPending.length > 0 ? (
-              filteredPending.map((candidate) => (
+              filteredPending.map((candidate, index) => (
                 <tr key={candidate.candidate_id}>
-                  <td class="td-wrap">{candidate.candidate_id}</td>
+                  <td class="td-wrap">{index+1}</td>
+                  {/* <td class="td-wrap">{candidate.candidate_id}</td> */}
                   <td class="td-wrap">{candidate.comp_domain}</td>
                   <td class="td-wrap">{candidate.comp_name}</td>
                   <td class="td-wrap">

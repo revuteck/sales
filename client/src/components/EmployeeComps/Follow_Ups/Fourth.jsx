@@ -74,7 +74,7 @@ export default function Fourth() {
     (c) =>
       c.fourth_f_status === "PENDING" &&
       isPastDate(c.fourth_f_date) &&
-      c.assigned_emp_id === empId
+      c.assigned_emp_id === empId && c.final_status !== "FAILED"
   );
 
   /* ================= CHECKBOX HANDLER ================= */
@@ -190,7 +190,8 @@ export default function Fourth() {
         <table className="table table-bordered table-hover table-follow-ups">
           <thead className="table-dark">
             <tr>
-              <th>ID</th>
+              <th style={{width:"2px"}}>No.</th>
+              {/* <th>ID</th> */}
               <th>Domain</th>
               <th>Company</th>
               <th>Website</th>
@@ -207,9 +208,10 @@ export default function Fourth() {
 
           <tbody>
             {pendingCandidates.length > 0 ? (
-              pendingCandidates.map((c) => (
+              pendingCandidates.map((c, index) => (
                 <tr key={c.candidate_id}>
-                  <td className="td-wrap">{c.candidate_id}</td>
+                  <td className="td-wrap">{index+1}</td>
+                  {/* <td className="td-wrap">{c.candidate_id}</td> */}
                   <td className="td-wrap">{c.comp_domain}</td>
                   <td className="td-wrap">{c.comp_name}</td>
                   <td className="td-wrap">

@@ -231,7 +231,8 @@ export default function TodayAllSent() {
         <table className="table table-bordered table-hover">
           <thead className="table-dark">
             <tr>
-              <th>ID</th>
+              <th style={{width:"2px"}}>No.</th>
+              {/* <th>ID</th> */}
               <th>Company</th>
               <th>Email</th>
               <th>Date</th>
@@ -243,9 +244,10 @@ export default function TodayAllSent() {
 
           <tbody>
             {list.length > 0 ? (
-              list.map((c) => (
+              list.map((c, index) => (
                 <tr key={c.candidate_id}>
-                  <td>{c.candidate_id}</td>
+                  <td>{index+1}</td>
+                  {/* <td>{c.candidate_id}</td> */}
                   <td>{c.comp_name}</td>
                   <td>{c.email}</td>
                   <td>{formatDate(c[dateField])}</td>

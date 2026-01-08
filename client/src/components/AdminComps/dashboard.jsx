@@ -70,7 +70,14 @@ export default function Dashboard() {
       });
 
       const employees = empRes.data;
-      const candidates = candRes.data;
+
+      const allCandidates = candRes.data || [];
+
+    // ✅ EXCLUDE FAILED COMPANIES
+    const notFailedCandidates = allCandidates.filter(
+      (c) => c.final_status?.toUpperCase() !== "FAILED"
+    );
+      const candidates = notFailedCandidates;
 
       const activeEmployees = employees.filter(e => e.status === "ACTIVE").length;
       const inactiveEmployees = employees.filter(e => e.status === "INACTIVE").length;
@@ -169,10 +176,10 @@ export default function Dashboard() {
         second_remains: candidates.filter(c=> c.second_f_status === "PENDING").length,
         third_remains: candidates.filter(c=> c.third_f_status === "PENDING").length,
         fourth_remains: candidates.filter(c=> c.fourth_f_status === "PENDING").length,
-        first_todo:   candidates.filter(c =>  c.first_f_status === "PENDING" && isToday(c.first_f_date)).length ,
-        second_todo: candidates.filter(c =>  c.second_f_status === "PENDING" && isToday(c.second_f_date) && c.first_f_status ==="DONE").length ,
-        third_todo: candidates.filter(c =>  c.third_f_status === "PENDING" && isToday(c.third_f_date) && c.second_f_status ==="DONE").length ,
-        fourth_todo: candidates.filter(c =>  c.fourth_f_status === "PENDING" && isToday(c.fourth_f_date) && c.third_f_status ==="DONE").length,
+        first_todo:   candidates.filter(c =>  c.first_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.first_f_date)).length ,
+        second_todo: candidates.filter(c =>  c.second_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.second_f_date) && c.first_f_status ==="DONE").length ,
+        third_todo: candidates.filter(c =>  c.third_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.third_f_date) && c.second_f_status ==="DONE").length ,
+        fourth_todo: candidates.filter(c =>  c.fourth_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.fourth_f_date) && c.third_f_status ==="DONE").length,
          first_tmr: tomorrowCounts.first_tmr,
           second_tmr: tomorrowCounts.second_tmr,
           third_tmr: tomorrowCounts.third_tmr,
@@ -299,7 +306,7 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
                   </tr>   
                   <tr>
                     <th colSpan="8">
-                      <span className="label">Tomorrow's Mails</span>
+                      <span className="label">TMR's Mails</span>
                     </th>
                     <td>
                       <span className="">: {counts.first_tmr}+{counts.second_tmr}+{counts.third_tmr}+{counts.fourth_tmr}</span>
