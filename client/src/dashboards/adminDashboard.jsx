@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { FiChevronRight  } from "react-icons/fi";
+import Swal from "sweetalert2";
 
 export default function SuperAdminDashboard() {
 
@@ -27,13 +28,32 @@ export default function SuperAdminDashboard() {
 
   // Logout function
   const logoutHandle = () => {
-    alert("Are you sure want to leave!!")
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("name");
-    localStorage.removeItem("id");
-    navigate("/");
-  };
+  Swal.fire({
+    title: "Log out?",
+    showCancelButton: true,
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    width: 350,
+    customClass: {
+    popup: "compact-swal",
+  },
+  }).then((result) => {
+    if (result.isConfirmed) {
+
+      setTimeout(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("name");
+        localStorage.removeItem("id");
+
+        navigate("/");
+      }, 500); // ⏱️ 0.5 second delay
+    }
+  });
+};
+
 
   return (
     <div className='d-flex  min-vh-100 w-100 m-0'>

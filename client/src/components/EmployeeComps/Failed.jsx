@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddComp from './addFailed';
+import Swal from 'sweetalert2';
 
 export default function Failed() {
 
@@ -68,21 +69,64 @@ export default function Failed() {
 
   /* ============= MOVE TO PENDING ================= */
   const handlemove = async () => {
-    if (selectedRows.length === 0) {
-      return alert("⚠ Select at least one candidate!");
-    }
-    try {
-      await axios.put("http://localhost:5000/api/candidates/final-status", {
-        ids: selectedRows,
-        status: "PENDING",
-      });
-      alert("Moved successfully!");
+  if (selectedRows.length === 0) {
+    Swal.fire({
+      icon: "warning",
+      title: "No candidate selected",
+       width: 350,
+      text: "⚠ Select at least one candidate!",
+      customClass: {
+    popup: "compact-swal",
+  },
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This will move the candidate(s) to PENDING status.",
+    // icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+     width: 350,
+     height: 200,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    customClass: {
+    popup: "compact-swal",
+  },
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await axios.put("http://localhost:5000/api/candidates/final-status", {
+      ids: selectedRows,
+      status: "PENDING",
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "Moved successfully!",
+      timer: 1000,
+      showConfirmButton: false,
+    });
+
+    setTimeout(() => {
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Error moving companies");
-    }
-  };
+    }, 1000);
+
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Error moving companies",
+    });
+  }
+};
+
 
   /* ============= MARK FAILED (Bulk) ============= */
   const handleMarkFailed = async () => {

@@ -98,6 +98,9 @@ export default function Fourth() {
       showCancelButton: true,
       confirmButtonText: "OK",
       cancelButtonText: "Cancel",
+      customClass: {
+    popup: "compact-swal",
+  },
     });
 
     if (result.isConfirmed) {

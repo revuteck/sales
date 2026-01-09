@@ -102,6 +102,9 @@ export default function Second() {
       cancelButtonText: "Cancel",
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
+      customClass: {
+    popup: "compact-swal",
+  },
     })
     if (result.isConfirmed) {
       // Put your undo code here

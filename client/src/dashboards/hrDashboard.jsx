@@ -41,6 +41,9 @@ export default function hrDashboard() {
     cancelButtonText: "Cancel",
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
+    customClass: {
+    popup: "compact-swal",
+  },
   }).then((result) => {
     if (result.isConfirmed) {
       // User pressed OK

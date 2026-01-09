@@ -30,26 +30,26 @@ export default function Dashboard() {
     activeEmployees: 0,
     inactiveEmployees: 0,
     totalmails: 0,
-    first_remains:0,
-    second_remains:0,
+    first_remains: 0,
+    second_remains: 0,
     third_remains: 0,
-    fourth_remains:0,
-    first_pendings:0,
-    second_pendings:0,
-    third_pendings:0,
-    fourth_pendings:0,
-    first_todo:0,
-    second_todo:0,
-    third_todo:0,
-    fourth_todo:0,
-    
+    fourth_remains: 0,
+    first_pendings: 0,
+    second_pendings: 0,
+    third_pendings: 0,
+    fourth_pendings: 0,
+    first_todo: 0,
+    second_todo: 0,
+    third_todo: 0,
+    fourth_todo: 0,
+
   });
   const tomorrowCounts = {
-  first_tmr: 0,
-  second_tmr: 0,
-  third_tmr: 0,
-  fourth_tmr: 0,
-};
+    first_tmr: 0,
+    second_tmr: 0,
+    third_tmr: 0,
+    fourth_tmr: 0,
+  };
 
   const [employeeStats, setEmployeeStats] = useState([]); // NEW
 
@@ -73,15 +73,15 @@ export default function Dashboard() {
 
       const allCandidates = candRes.data || [];
 
-    // ✅ EXCLUDE FAILED COMPANIES
-    const notFailedCandidates = allCandidates.filter(
-      (c) => c.final_status?.toUpperCase() !== "FAILED"
-    );
+      // ✅ EXCLUDE FAILED COMPANIES
+      const notFailedCandidates = allCandidates.filter(
+        (c) => c.final_status?.toUpperCase() !== "FAILED"
+      );
       const candidates = notFailedCandidates;
 
       const activeEmployees = employees.filter(e => e.status === "ACTIVE").length;
       const inactiveEmployees = employees.filter(e => e.status === "INACTIVE").length;
-//           TMR COUNT
+      //           TMR COUNT
       candidates.forEach(c => {
         if (isTomorrow(c.first_f_date) && c.first_f_status === "PENDING") {
           tomorrowCounts.first_tmr++;
@@ -96,7 +96,7 @@ export default function Dashboard() {
           tomorrowCounts.fourth_tmr++;
         }
       });
-      
+
 
       // ---------------------------------
       // 🔥 EMPLOYEE WORK PROGRESS LOGIC
@@ -123,22 +123,50 @@ export default function Dashboard() {
         const assigned = candidates.filter(c => c.assigned_emp_id === emp.emp_id);
 
         // todays tasks
-        const todo = assigned.filter(
-          c =>
-            (c.first_f_status === "PENDING" && isToday(c.first_f_date)) ||
-            (c.second_f_status === "PENDING" && isToday(c.second_f_date) && c.first_f_status === "DONE") ||
-            (c.third_f_status === "PENDING" && isToday(c.third_f_date)  && c.second_f_status === "DONE") ||
-            (c.fourth_f_status === "PENDING" && isToday(c.fourth_f_date) && c.third_f_status === "DONE")
-        ).length;
+        let first_todo = 0;
+        let second_todo = 0;
+        let third_todo = 0;
+        let fourth_todo = 0;
+
+        assigned.forEach(c => {
+
+          // FIRST
+          if (c.first_f_status === "PENDING" && isToday(c.first_f_date)) {
+            first_todo++;
+          }
+
+          // SECOND
+          if (c.second_f_status === "PENDING" && isToday(c.second_f_date)) {
+            second_todo++;
+          }
+
+          // THIRD
+          if (c.third_f_status === "PENDING" && isToday(c.third_f_date)) {
+            third_todo++;
+          }
+
+          // FOURTH
+          if (c.fourth_f_status === "PENDING" && isToday(c.fourth_f_date)) {
+            fourth_todo++;
+          }
+
+        });
+
+        const todo = first_todo + second_todo + third_todo + fourth_todo;
+
 
         // pending late tasks
-        const pending = assigned.filter(
-          c =>
-            (c.first_f_status === "PENDING" && isPending(c.first_f_date)) ||
-            (c.second_f_status === "PENDING" && isPending(c.second_f_date)) ||
-            (c.third_f_status === "PENDING" && isPending(c.third_f_date)) ||
-            (c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date))
-        ).length;
+        let pending = 0;
+
+        assigned.forEach(c => {
+
+          if (c.first_f_status === "PENDING" && isPending(c.first_f_date)) pending++;
+          if (c.second_f_status === "PENDING" && isPending(c.second_f_date)) pending++;
+          if (c.third_f_status === "PENDING" && isPending(c.third_f_date)) pending++;
+          if (c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date)) pending++;
+
+        });
+
 
         const tmrList = assigned.filter(
           c =>
@@ -146,7 +174,7 @@ export default function Dashboard() {
             (c.second_f_status === "PENDING" && isTomorrow(c.second_f_date)) ||
             (c.third_f_status === "PENDING" && isTomorrow(c.third_f_date)) ||
             (c.fourth_f_status === "PENDING" && isTomorrow(c.fourth_f_date))
-          
+
         ).length
 
         return {
@@ -171,29 +199,29 @@ export default function Dashboard() {
         first_pendings: candidates.filter(c => c.first_f_status === "PENDING" && isPending(c.first_f_date)).length,
         second_pendings: candidates.filter(c => c.second_f_status === "PENDING" && isPending(c.second_f_date)).length,
         third_pendings: candidates.filter(c => c.third_f_status === "PENDING" && isPending(c.third_f_date)).length,
-        fourth_pendings: candidates.filter(c => c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date)).length, 
-        first_remains: candidates.filter(c=> c.first_f_status==="PENDING").length,
-        second_remains: candidates.filter(c=> c.second_f_status === "PENDING").length,
-        third_remains: candidates.filter(c=> c.third_f_status === "PENDING").length,
-        fourth_remains: candidates.filter(c=> c.fourth_f_status === "PENDING").length,
-        first_todo:   candidates.filter(c =>  c.first_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.first_f_date)).length ,
-        second_todo: candidates.filter(c =>  c.second_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.second_f_date) && c.first_f_status ==="DONE").length ,
-        third_todo: candidates.filter(c =>  c.third_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.third_f_date) && c.second_f_status ==="DONE").length ,
-        fourth_todo: candidates.filter(c =>  c.fourth_f_status === "PENDING" &&  c.final_status !== "FAILED" && isToday(c.fourth_f_date) && c.third_f_status ==="DONE").length,
-         first_tmr: tomorrowCounts.first_tmr,
-          second_tmr: tomorrowCounts.second_tmr,
-          third_tmr: tomorrowCounts.third_tmr,
-          fourth_tmr: tomorrowCounts.fourth_tmr
+        fourth_pendings: candidates.filter(c => c.fourth_f_status === "PENDING" && isPending(c.fourth_f_date)).length,
+        first_remains: candidates.filter(c => c.first_f_status === "PENDING").length,
+        second_remains: candidates.filter(c => c.second_f_status === "PENDING").length,
+        third_remains: candidates.filter(c => c.third_f_status === "PENDING").length,
+        fourth_remains: candidates.filter(c => c.fourth_f_status === "PENDING").length,
+        first_todo: candidates.filter(c => c.first_f_status === "PENDING" && c.final_status !== "FAILED" && isToday(c.first_f_date)).length,
+        second_todo: candidates.filter(c => c.second_f_status === "PENDING" && c.final_status !== "FAILED" && isToday(c.second_f_date) && c.first_f_status === "DONE").length,
+        third_todo: candidates.filter(c => c.third_f_status === "PENDING" && c.final_status !== "FAILED" && isToday(c.third_f_date) && c.second_f_status === "DONE").length,
+        fourth_todo: candidates.filter(c => c.fourth_f_status === "PENDING" && c.final_status !== "FAILED" && isToday(c.fourth_f_date) && c.third_f_status === "DONE").length,
+        first_tmr: tomorrowCounts.first_tmr,
+        second_tmr: tomorrowCounts.second_tmr,
+        third_tmr: tomorrowCounts.third_tmr,
+        fourth_tmr: tomorrowCounts.fourth_tmr
       });
 
     } catch (err) {
       console.error(err);
     }
   };
-console.log(tomorrowCounts.first);   // tomorrow first follow-up count  
-console.log(tomorrowCounts.second);  // tomorrow second follow-up count  
-console.log(tomorrowCounts.third);   // tomorrow third follow-up count  
-console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count  
+  console.log(tomorrowCounts.first);   // tomorrow first follow-up count  
+  console.log(tomorrowCounts.second);  // tomorrow second follow-up count  
+  console.log(tomorrowCounts.third);   // tomorrow third follow-up count  
+  console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count  
 
   return (
     <>
@@ -219,21 +247,21 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
                     Companies
                   </NavLink>
                   <tr>
-                   <th style={{width: "114px"}}><span className="label count-span">Total Companies</span></th>
-                   <td><h2 className="value">: {counts.candidates}</h2></td>
+                    <th style={{ width: "114px" }}><span className="label count-span">Total Companies</span></th>
+                    <td><h2 className="value">: {counts.candidates}</h2></td>
                   </tr>
-                   
-                   <tr>
-                    <th style={{width: "114px"}}><span className="label count-span">Total Pendings</span></th>
+
+                  <tr>
+                    <th style={{ width: "114px" }}><span className="label count-span">Total Pendings</span></th>
                     <td><h2 className="value">: {counts.pending}</h2> </td>
-                   </tr>
-                   <tr>
-                    <th style={{width: "114px"}}><span className="label count-span">Total Completed</span></th>
+                  </tr>
+                  <tr>
+                    <th style={{ width: "114px" }}><span className="label count-span">Total Completed</span></th>
                     <td><h2 className="value">: {counts.completed}</h2> </td>
-                     </tr>
-                   
-                   
-                  
+                  </tr>
+
+
+
                 </div>
               </div>
             </div>
@@ -250,23 +278,23 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
                   >
                     Employees
                   </NavLink>
-                  
+
                   <tr>
-                    <th style={{width: "130px"}}><span className="label count-span">Total Employees</span></th>
+                    <th style={{ width: "130px" }}><span className="label count-span">Total Employees</span></th>
                     <td><h2 className="value">: {counts.employees}</h2></td>
                   </tr>
                   <tr>
-                    <th style={{width: "130px"}}><span className="label count-span">Active Employees</span></th>
+                    <th style={{ width: "130px" }}><span className="label count-span">Active Employees</span></th>
                     <td><h2 className="value text-info">: {counts.activeEmployees}</h2></td>
                   </tr>
                   <tr>
-                    <th style={{width: "130px"}}><span className="label count-span">Inactive Employees</span></th>
+                    <th style={{ width: "130px" }}><span className="label count-span">Inactive Employees</span></th>
                     <td><h2 className="value text-secondary">: {counts.inactiveEmployees}</h2></td>
                   </tr>
-                  
-                  
-                  
-                  
+
+
+
+
                 </div>
               </div>
             </div>
@@ -284,26 +312,26 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
                     TODO
                   </NavLink>
                   <tr>
-                    <th style={{width: "90px"}}><span className="label count-span">Total Mails</span></th>
+                    <th style={{ width: "90px" }}><span className="label count-span">Total Mails</span></th>
                     <td><h2 className="value text-danger">: {counts.totalmails}</h2></td>
                     {/* <td>kk</td> */}
                   </tr>
-                  
+
                   <tr>
-                    <th style={{width: "94px"}}><span className="label count-span">Pending Mails</span></th>
+                    <th style={{ width: "94px" }}><span className="label count-span">Pending Mails</span></th>
                     <td><span>: {counts.first_pendings}+{counts.second_pendings}+{counts.third_pendings}+{counts.fourth_pendings}</span></td>
-                    <td><h2 className="value text-danger">={counts.first_pendings+counts.second_pendings+counts.third_pendings+counts.fourth_pendings}</h2></td>
+                    <td><h2 className="value text-danger">={counts.first_pendings + counts.second_pendings + counts.third_pendings + counts.fourth_pendings}</h2></td>
                   </tr>
                   <tr>
-                    <th style={{width: "94px"}}><span className="label count-span">TODO Mails</span></th>
+                    <th style={{ width: "94px" }}><span className="label count-span">TODO Mails</span></th>
                     <td><span>: {counts.first_todo}+{counts.second_todo}+{counts.third_todo}+{counts.fourth_todo}</span></td>
-                    <td><h2 className="value text-danger">={counts.first_todo + counts.second_todo +counts.third_todo+counts.fourth_todo}</h2></td>
-                  </tr> 
+                    <td><h2 className="value text-danger">={counts.first_todo + counts.second_todo + counts.third_todo + counts.fourth_todo}</h2></td>
+                  </tr>
                   <tr>
-                    <th style={{width: "94px"}}><span className="label count-span">Remaining</span></th>
+                    <th style={{ width: "94px" }}><span className="label count-span">Remaining</span></th>
                     <td><span>: {counts.first_remains}+{counts.second_remains}+{counts.third_remains}+{counts.fourth_remains}</span></td>
-                    <td><h2 className="value text-danger">={counts.first_remains+counts.second_remains+counts.third_remains+counts.fourth_remains}</h2></td>
-                  </tr>   
+                    <td><h2 className="value text-danger">={counts.first_remains + counts.second_remains + counts.third_remains + counts.fourth_remains}</h2></td>
+                  </tr>
                   <tr>
                     <th colSpan="8">
                       <span className="label">TMR's Mails</span>
@@ -314,7 +342,7 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
                     <td>
                       <h2 className="value">={counts.first_tmr + counts.second_tmr + counts.third_tmr + counts.fourth_tmr}</h2>
                     </td>
-                  </tr>          
+                  </tr>
                 </div>
               </div>
             </div>
@@ -354,7 +382,7 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
               <div key={index} className="col-md-3">
                 <div className="shadow p-3">
                   <h6 className="fw-bold">{emp.emp_name}
-                    {/* -<span style={{fontSize: "10px"}}>{emp.emp_designation}</span> */} </h6> 
+                    {/* -<span style={{fontSize: "10px"}}>{emp.emp_designation}</span> */} </h6>
                   <tr>
                     <td><div>🏢 Registered Companies </div></td>
                     <td><b> : {emp.totalCompanies}</b></td>
@@ -371,9 +399,9 @@ console.log(tomorrowCounts.fourth);  // tomorrow fourth follow-up count
                     <td><div>⏳ Tomorrow Follow ups</div></td>
                     <td><b className="text-danger"> : {emp.tmrList}</b></td>
                   </tr>
-                  
-                  
-                  
+
+
+
                 </div>
               </div>
             ))}

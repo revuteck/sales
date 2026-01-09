@@ -8,6 +8,9 @@ import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
 import { FaFileExcel } from "react-icons/fa";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import Swal from 'sweetalert2';
+
 import { addFiveDays, addFourDays, addThreeDays, addTwoDays } from '../../utilities/ActualDates';
 
 
@@ -21,6 +24,7 @@ export default function Candidates() {
     const [hoverCandidate, setHoverCandidate] = React.useState(null);
     const [countries, setCountries] = React.useState([]);
     const [searchCountry, setCountry] = useState("all")
+    const [selectedRows, setSelectedRows] = useState("")
 
 
     const empId = localStorage.getItem("id");
@@ -115,6 +119,61 @@ export default function Candidates() {
             alert("Update failed");
         }
     };
+/* ============= MOVE TO PENDING ================= */
+  const handleFailed = async (id) => {
+  if (!id) {
+    Swal.fire({
+      icon: "warning",
+      title: "No candidate selected",
+      width: 350,
+      text: "⚠ Select at least one candidate!",
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This will mark the candidate as FAILED.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "OK",
+    cancelButtonText: "Cancel",
+    width: 350,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+     customClass: {
+    popup: "compact-swal",
+  },
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await axios.put("http://localhost:5000/api/candidates/final-status", {
+      ids: id,
+      status: "FAILED",
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "Moved successfully!",
+      timer: 1000,
+      showConfirmButton: false,
+    });
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Error moving companies",
+    });
+  }
+};
 
 
     return (
@@ -246,7 +305,7 @@ export default function Candidates() {
 
                                     <td
                                         className="td-wrap"
-                                        style={{ width: "7%", whiteSpace: "nowrap" }}
+                                        style={{ width: "10%", whiteSpace: "nowrap" }}
                                     >
                                         <div
                                             className="d-flex align-items-center justify-content-between"
@@ -271,6 +330,13 @@ export default function Candidates() {
                                                     onClick={() => handleDelete(candidate.candidate_id)}
                                                 >
                                                     <FaTrash className="trash-icon" />
+
+                                                </button>
+                                                <button title='Move to Failed'
+                                                    className="btn btn-sm  p-1 follow-up-btn"
+                                                    onClick={() => handleFailed(candidate.candidate_id)}
+                                                >
+                                                    <AiOutlineCloseCircle size={20} color="#e11d48" />
 
                                                 </button>
 

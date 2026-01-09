@@ -97,6 +97,9 @@ export default function First() {
       cancelButtonText: "Cancel",
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
+      customClass: {
+    popup: "compact-swal",
+  },
     })
     if (result.isConfirmed) {
       // Put your undo code here
@@ -111,7 +114,8 @@ export default function First() {
           // text: "Updated Successfully",
           icon: "success",
           timer: 500,            // closes after 5 sec
-          showConfirmButton: false
+          showConfirmButton: false,
+          
         });
 
 

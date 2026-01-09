@@ -665,4 +665,37 @@ tr {
 }
 
 
+/* =====================SWEET ALERT CSS=================0 */
+.compact-swal {
+  width: 300px !important;
+  padding: 0.75rem !important; /* 👈 reduces height */
+}
+
+.compact-swal .swal2-title {
+  font-size: 15px;
+  margin: 0.25rem 0;
+}
+
+.compact-swal .swal2-html-container {
+  font-size: 13px;
+  margin: 0.25rem 0;
+}
+
+.compact-swal .swal2-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0.5rem auto;
+}
+
+.compact-swal .swal2-actions {
+  margin-top: 0.5rem;
+}
+
+.compact-swal .swal2-actions button {
+  padding: 5px 10px;
+  font-size: 13px;
+}
+
+
+
 
