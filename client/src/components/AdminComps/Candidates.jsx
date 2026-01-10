@@ -161,6 +161,10 @@ export default function Candidates() {
     cancelButtonText: "Cancel",
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
+      customClass: {
+    popup: "compact-swal",
+  },
+
   });
 
   if (!result.isConfirmed) return;

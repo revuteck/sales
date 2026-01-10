@@ -405,29 +405,29 @@ export default function Candidates() {
                                             </tr>
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>First Follow-up</th>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.first_done_dt)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.first_f_date)}</td>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{addTwoDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.first_f_status}</td>
                                             </tr>                                    
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Second Follow-up</th>
 
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}> {formatDate(selectedCandidate.second_done_dt)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}> {formatDate(selectedCandidate.second_f_date)}</td>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}> {addThreeDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.second_f_status}</td>
 
                                             </tr>
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Third Follow-up</th>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.third_done_dt)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.third_f_date)}</td>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{addFourDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.third_f_status}</td>
 
                                             </tr>
                                             <tr>
                                                 <th style={{ width: "250px", whiteSpace: "nowrap" }}>Fourth Follow-up</th>
+                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.fourth_done_dt)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{formatDate(selectedCandidate.fourth_f_date)}</td>
-                                                <td style={{ width: "250px", whiteSpace: "nowrap" }}>{addFiveDays(selectedCandidate.date_of_register)}</td>
                                                 <td style={{ width: "250px", whiteSpace: "nowrap" }}>{selectedCandidate.fourth_f_status}</td>
 
                                             </tr>
