@@ -116,16 +116,16 @@ export default function Dashboard() {
       const myCompanies = data.filter(c => c.assigned_emp_id === empId && c.final_status !== "FAILED");
       setCandidates(myCompanies)
         myCompanies.forEach(c => {
-    if (isTomorrow(c.first_f_date) && c.first_f_status === "PENDING") {
+    if (isTomorrow(c.first_f_date) && c.first_f_status === "PENDING" && c.initial_status === "DONE") {
       tomorrowCounts.first_tmr++;
     }
-    if (isTomorrow(c.second_f_date) && c.second_f_status === "PENDING") {
+    if (isTomorrow(c.second_f_date) && c.second_f_status === "PENDING" && c.first_f_status === "DONE") {
       tomorrowCounts.second_tmr++;
     }
-    if (isTomorrow(c.third_f_date) && c.third_f_status === "PENDING") {
+    if (isTomorrow(c.third_f_date) && c.third_f_status === "PENDING" && c.second_f_status === "DONE") {
       tomorrowCounts.third_tmr++;
     }
-    if (isTomorrow(c.fourth_f_date) && c.fourth_f_status === "PENDING") {
+    if (isTomorrow(c.fourth_f_date) && c.fourth_f_status === "PENDING" && c.third_f_status === "DONE") {
       tomorrowCounts.fourth_tmr++;
     }
   });

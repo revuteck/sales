@@ -93,6 +93,9 @@ export default function hrDashboard() {
             to="todo">TODO Lists</NavLink>
           <NavLink
             className={activeLink === "todolist" ? "active" : ""}
+            to="tmrschld">Tommorow's </NavLink>
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
             to="todaysentmails">Today Sent Mails</NavLink>
           <NavLink
             className={activeLink === "todolist" ? "active" : ""}

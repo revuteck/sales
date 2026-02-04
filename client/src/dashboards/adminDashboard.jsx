@@ -88,6 +88,10 @@ export default function SuperAdminDashboard() {
             className={activeLink === "todolist" ? "active" : ""}
             to="all-todo"
           >TODO Lists</NavLink>
+          <NavLink
+            className={activeLink === "todolist" ? "active" : ""}
+            to="all-tmrs"
+          >Tommorow's Mails</NavLink>
           {/* <NavLink
             className={activeLink === "todolist" ? "active" : ""}
             to="all-mails-today-sent"
