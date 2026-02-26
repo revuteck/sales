@@ -131,22 +131,22 @@ export default function Dashboard() {
         assigned.forEach(c => {
 
           // FIRST
-          if (c.first_f_status === "PENDING" && isToday(c.first_f_date)) {
+          if (c.first_f_status === "PENDING" && c.initial_status =="DONE" && isToday(c.first_f_date)) {
             first_todo++;
           }
 
           // SECOND
-          if (c.second_f_status === "PENDING" && isToday(c.second_f_date)) {
+          if (c.second_f_status === "PENDING" && c.first_f_status == "DONE" && isToday(c.second_f_date)) {
             second_todo++;
           }
 
           // THIRD
-          if (c.third_f_status === "PENDING" && isToday(c.third_f_date)) {
+          if (c.third_f_status === "PENDING" && c.second_f_status == "DONE" && isToday(c.third_f_date)) {
             third_todo++;
           }
 
           // FOURTH
-          if (c.fourth_f_status === "PENDING" && isToday(c.fourth_f_date)) {
+          if (c.fourth_f_status === "PENDING" && c.third_f_status == "DONE" && isToday(c.fourth_f_date)) {
             fourth_todo++;
           }
 

@@ -81,14 +81,14 @@ export default function AddCandidate() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setMessage("Candidate Added Successfully!");
+      setMessage("Company Added Successfully!");
 
       setTimeout(() => {
         window.location.reload();
       }, 1000);
 
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to add candidate");
+      setMessage(error.response?.data?.message || "Failed to add Company");
     }
   };
 

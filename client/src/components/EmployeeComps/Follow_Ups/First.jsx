@@ -71,7 +71,7 @@ export default function First() {
   /* ================= FILTER FIRST FOLLOW UPS ================= */
   const pendingCandidates = filteredByCountry.filter(
     (candidate) =>
-      candidate.first_f_status === "PENDING" &&
+      candidate.first_f_status === "PENDING" && candidate.initial_status == "DONE" &&
       isPastDate(candidate.first_f_date) &&
       candidate.assigned_emp_id === empId && candidate.final_status !== "FAILED"
   );

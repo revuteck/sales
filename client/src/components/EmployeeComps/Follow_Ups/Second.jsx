@@ -64,7 +64,7 @@ export default function Second() {
   );
 
   const filteredPending = candidates.filter(c => {
-    const isPending = c.second_f_status === "PENDING" &&
+    const isPending = c.second_f_status === "PENDING" && c.first_f_status == "DONE" &&
       isPastDate(c.second_f_date) &&
       c.assigned_emp_id === empId && c.final_status !== "FAILED";
 

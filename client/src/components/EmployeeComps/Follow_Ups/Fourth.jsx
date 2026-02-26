@@ -72,7 +72,7 @@ export default function Fourth() {
   /* ================= FINAL PENDING LIST ================= */
   const pendingCandidates = filteredByCountry.filter(
     (c) =>
-      c.fourth_f_status === "PENDING" &&
+      c.fourth_f_status === "PENDING" && c.third_f_status =="DONE" &&
       isPastDate(c.fourth_f_date) &&
       c.assigned_emp_id === empId && c.final_status !== "FAILED"
   );
